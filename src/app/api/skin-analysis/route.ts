@@ -2,10 +2,19 @@ import { NextResponse } from "next/server";
 import { createSkinAnalysisTask } from "@/lib/youcam/client";
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { fileId } = body;
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
-  if (typeof fileId !== "string") {
+  const fileId =
+    typeof body === "object" && body !== null && "fileId" in body
+      ? (body as { fileId: unknown }).fileId
+      : undefined;
+
+  if (typeof fileId !== "string" || !fileId.trim()) {
     return NextResponse.json({ error: "Missing fileId" }, { status: 400 });
   }
 

@@ -26,10 +26,12 @@ export default async function HistoryPage() {
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-16 px-6 py-16 sm:px-10">
       <Reveal>
-        <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link href="/" className="text-sm text-muted-foreground hover:text-accent-solid">
           ← Back
         </Link>
-        <h1 className="mt-3 font-display text-4xl italic sm:text-5xl">Your history</h1>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+          Your history
+        </h1>
         <p className="mt-3 text-muted-foreground">
           Skin analyses and try-ons saved to this browser session.
         </p>
@@ -37,7 +39,7 @@ export default async function HistoryPage() {
 
       <section>
         <Reveal>
-          <h2 className="mb-6 font-display text-2xl italic">Skin analyses</h2>
+          <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight">Skin analyses</h2>
         </Reveal>
         {skinResults.length === 0 && <p className="text-sm text-muted-foreground">None yet.</p>}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -64,7 +66,7 @@ export default async function HistoryPage() {
 
       <section>
         <Reveal>
-          <h2 className="mb-6 font-display text-2xl italic">Try-ons</h2>
+          <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight">Try-ons</h2>
         </Reveal>
         {tryOnResults.length === 0 && <p className="text-sm text-muted-foreground">None yet.</p>}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

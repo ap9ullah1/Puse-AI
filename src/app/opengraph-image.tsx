@@ -14,11 +14,10 @@ export default function OpengraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#fbf7f4",
+          background: "#000d0d",
           padding: "0 80px",
         }}
       >
-
         <div
           style={{
             display: "flex",
@@ -26,7 +25,7 @@ export default function OpengraphImage() {
             justifyContent: "center",
             fontSize: 76,
             fontWeight: 600,
-            color: "#201815",
+            color: "#fafafa",
             textAlign: "center",
             lineHeight: 1.15,
           }}
@@ -35,7 +34,7 @@ export default function OpengraphImage() {
           <span
             style={{
               display: "flex",
-              backgroundImage: "linear-gradient(100deg, #ff6b6b, #f5487f, #8b5cf6)",
+              backgroundImage: "linear-gradient(100deg, #04524a, #1de4d0, #62b5d1)",
               backgroundClip: "text",
               color: "transparent",
             }}
@@ -43,7 +42,7 @@ export default function OpengraphImage() {
             pulse
           </span>
         </div>
-        <div style={{ display: "flex", fontSize: 28, color: "#83746d", marginTop: 28 }}>
+        <div style={{ display: "flex", fontSize: 28, color: "#94969c", marginTop: 28 }}>
           YouCam Skin AI + Virtual Try-On, in one flow
         </div>
       </div>

@@ -1,7 +1,7 @@
 function scoreColor(score: number): string {
-  if (score < 60) return "#e63971";
-  if (score < 80) return "#f59e0b";
-  return "#22c55e";
+  if (score < 60) return "#f59e0b";
+  if (score < 80) return "#62b5d1";
+  return "#1de4d0";
 }
 
 export function ScoreRing({ score, label, size = 88 }: { score: number; label: string; size?: number }) {
@@ -36,9 +36,11 @@ export function ScoreRing({ score, label, size = 88 }: { score: number; label: s
             style={{ transition: "stroke-dashoffset 0.6s ease" }}
           />
         </svg>
-        <div className="absolute inset-0 flex items-center justify-center text-lg font-semibold">{score}</div>
+        <div className="absolute inset-0 flex items-center justify-center font-display text-lg font-semibold">
+          {score}
+        </div>
       </div>
-      <span className="text-xs font-medium capitalize text-muted-foreground">{label}</span>
+      <span className="text-xs font-medium capitalize tracking-wide text-muted-foreground">{label}</span>
     </div>
   );
 }

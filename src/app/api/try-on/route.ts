@@ -20,7 +20,6 @@ export async function POST(request: Request) {
       srcFileId: fileId,
       garmentCategory: product.garmentCategory,
       refImageUrl: product.refImageUrl,
-      templateId: product.templateId,
     });
     return NextResponse.json({ taskId });
   } catch (err) {

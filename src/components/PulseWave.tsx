@@ -3,9 +3,9 @@ export function PulseWave({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 600 120" fill="none" className={className} aria-hidden="true">
       <defs>
         <linearGradient id="pulse-line" x1="0" y1="0" x2="600" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ff6b6b" />
-          <stop offset="50%" stopColor="#f5487f" />
-          <stop offset="100%" stopColor="#8b5cf6" />
+          <stop offset="0%" stopColor="#04524a" />
+          <stop offset="50%" stopColor="#1de4d0" />
+          <stop offset="100%" stopColor="#62b5d1" />
         </linearGradient>
       </defs>
       <path

@@ -17,6 +17,8 @@ const FRIENDLY_MESSAGES: Record<string, string> = {
   InvalidApiKey: "This app's API key isn't valid. Check YOUCAM_API_KEY in .env.local.",
   InactiveApiKey: "This app's API key is inactive. Check your YouCam account.",
   ExpiredApiKey: "This app's API key has expired. Generate a new one in your YouCam account.",
+  InsufficientCredits:
+    "Your YouCam account is out of API credits. Redeem or top up units, then try again.",
 };
 
 export function friendlyYouCamError(
@@ -24,6 +26,12 @@ export function friendlyYouCamError(
   fallbackMessage: string | null | undefined
 ): string {
   if (code && FRIENDLY_MESSAGES[code]) return FRIENDLY_MESSAGES[code];
-  if (fallbackMessage) return fallbackMessage;
+  if (fallbackMessage) {
+    const lower = fallbackMessage.toLowerCase();
+    if (lower.includes("enough credit") || lower.includes("insufficient")) {
+      return FRIENDLY_MESSAGES.InsufficientCredits;
+    }
+    return fallbackMessage;
+  }
   return "Something went wrong processing that photo. Try again.";
 }

@@ -14,7 +14,7 @@ import type { SkinAnalysisPollResponse } from "@/lib/youcam/types";
 const GUIDANCE = [
   "Face fills most of the frame",
   "Look straight at the camera",
-  "Good, even lighting",
+  "Good, even lighting — JPEG or PNG only",
 ];
 
 export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincareProduct[] }) {
@@ -28,6 +28,7 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
 
   async function handleUploaded(fileId: string, preview: string) {
     setPreviewUrl(preview);
+    setTaskId(null);
     setCreating(true);
     setCreateError(null);
     try {
@@ -36,8 +37,15 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileId }),
       });
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error ?? "Could not start analysis");
+      const body = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(
+          friendlyYouCamError(null, body?.error ?? "Could not start analysis")
+        );
+      }
+      if (typeof body?.taskId !== "string") {
+        throw new Error("Analysis started but no task id came back. Try again.");
+      }
       setTaskId(body.taskId);
     } catch (err) {
       setCreateError(err instanceof Error ? err.message : "Could not start analysis");
@@ -47,13 +55,14 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
   }
 
   function retry() {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
     setTaskId(null);
     setCreateError(null);
   }
 
   const sortedConcerns = useMemo(() => {
-    if (!data?.results) return [];
+    if (!data?.results?.output?.length) return [];
     return [...data.results.output].sort((a, b) => a.ui_score - b.ui_score);
   }, [data]);
 
@@ -65,7 +74,9 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
   }, [topConcerns, skincareProducts]);
 
   const taskErrorMessage =
-    status === "error" ? friendlyYouCamError(data?.error, data?.error_message) : null;
+    status === "error" ? friendlyYouCamError(data?.error, data?.error_message ?? data?.error) : null;
+
+  const showResults = status === "success" && topConcerns.length > 0;
 
   return (
     <>
@@ -81,10 +92,10 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
           <img
             src={previewUrl}
             alt="Uploaded selfie"
-            className="h-72 w-72 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+            className="h-72 w-72 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)] ring-1 ring-accent-solid/20"
           />
           <div className="flex-1">
-            {(creating || status === "running") && (
+            {(creating || (taskId && status === "running")) && (
               <div className="flex items-center gap-3 text-muted-foreground">
                 <span className="pulse-gradient-bg pulse-ring h-2.5 w-2.5 rounded-full" />
                 Analyzing your skin…
@@ -92,24 +103,48 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
             )}
 
             {(createError || taskErrorMessage) && (
-              <Card className="flex flex-col gap-3 p-5">
-                <p className="text-sm text-accent-solid">{createError ?? taskErrorMessage}</p>
+              <Card className="flex flex-col gap-3 border-amber-500/30 p-5">
+                <p className="text-sm text-amber-400">{createError ?? taskErrorMessage}</p>
                 <button
                   type="button"
                   onClick={retry}
-                  className="self-start text-sm font-medium text-foreground underline underline-offset-4"
+                  className="self-start text-sm font-medium text-accent-solid underline underline-offset-4"
                 >
                   Try another photo
                 </button>
               </Card>
             )}
 
-            {status === "success" && data?.results && (
+            {status === "success" && !topConcerns.length && (
+              <Card className="flex flex-col gap-3 border-amber-500/30 p-5">
+                <p className="text-sm text-amber-400">
+                  Analysis finished but no scores came back. Try another clear selfie.
+                </p>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="self-start text-sm font-medium text-accent-solid underline underline-offset-4"
+                >
+                  Try another photo
+                </button>
+              </Card>
+            )}
+
+            {showResults && (
               <div className="flex flex-col gap-5">
-                <h2 className="font-display text-2xl italic">Top concerns</h2>
-                <div className="flex flex-wrap gap-6">
+                <div>
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-accent-solid">
+                    Weakest scores
+                  </p>
+                  <h2 className="font-display text-2xl font-semibold tracking-tight">Top concerns</h2>
+                </div>
+                <div className="flex flex-wrap gap-6 rounded-[var(--radius)] border border-border bg-card/60 p-6">
                   {topConcerns.map((concern) => (
-                    <ScoreRing key={concern.type} score={concern.ui_score} label={concern.type.replace(/_/g, " ")} />
+                    <ScoreRing
+                      key={concern.type}
+                      score={concern.ui_score}
+                      label={concern.type.replace(/_/g, " ")}
+                    />
                   ))}
                 </div>
               </div>
@@ -120,10 +155,18 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
 
       {recommended.length > 0 && (
         <Reveal>
-          <h2 className="mb-4 font-display text-2xl italic">Recommended for you</h2>
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-accent-solid">
+            Matched for you
+          </p>
+          <h2 className="mb-4 font-display text-2xl font-semibold tracking-tight">
+            Recommended products
+          </h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {recommended.map((product) => (
-              <Card key={product.id} className="overflow-hidden p-3">
+              <Card
+                key={product.id}
+                className="overflow-hidden p-3 transition hover:border-accent-solid/40 hover:shadow-[0_0_24px_-12px_var(--accent-solid)]"
+              >
                 <ProductThumb
                   id={product.id}
                   kind="skincare"

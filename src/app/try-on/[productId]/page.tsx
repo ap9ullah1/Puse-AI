@@ -26,10 +26,12 @@ export default async function TryOnPage({
           className="h-28 w-24 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
         />
         <div>
-          <Link href="/catalog" className="text-sm text-muted-foreground hover:text-foreground">
+          <Link href="/catalog" className="text-sm text-muted-foreground hover:text-accent-solid">
             ← Back to catalog
           </Link>
-          <h1 className="mt-2 font-display text-4xl italic sm:text-5xl">Try on: {product.name}</h1>
+          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+            Try on: {product.name}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">${product.price}</p>
         </div>
       </Reveal>

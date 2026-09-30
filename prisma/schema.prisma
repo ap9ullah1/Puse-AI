@@ -15,7 +15,6 @@ model Product {
   image           String
   concern         String?
   refImageUrl     String?
-  templateId      String?
   garmentCategory String?
 
   tryOnResults TryOnResult[]

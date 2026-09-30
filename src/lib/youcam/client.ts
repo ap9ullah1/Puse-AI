@@ -28,7 +28,13 @@ async function youcamFetch<T>(path: string, init: RequestInit = {}): Promise<T> 
   const body = await res.json().catch(() => null);
 
   if (!res.ok) {
-    const message = body?.error ?? `YouCam API request failed with status ${res.status}`;
+    const raw = body?.error ?? body?.message ?? body?.error_message;
+    const message =
+      typeof raw === "string"
+        ? raw
+        : typeof raw?.message === "string"
+          ? raw.message
+          : `YouCam API request failed with status ${res.status}`;
     throw new Error(message);
   }
 
@@ -99,17 +105,14 @@ export type GarmentCategory = "auto" | "full_body" | "upper_body" | "lower_body"
 export async function createClothTryOnTask(params: {
   srcFileId: string;
   garmentCategory: GarmentCategory;
-  refImageUrl?: string;
-  templateId?: string;
+  refImageUrl: string;
 }): Promise<string> {
   const res = await youcamFetch<YouCamTaskCreateResponse>("/s2s/v2.0/task/cloth-v4", {
     method: "POST",
     body: JSON.stringify({
       src_file_id: params.srcFileId,
       garment_category: params.garmentCategory,
-      ...(params.templateId
-        ? { template_id: params.templateId }
-        : { ref_file_url: params.refImageUrl }),
+      ref_file_url: params.refImageUrl,
     }),
   });
 

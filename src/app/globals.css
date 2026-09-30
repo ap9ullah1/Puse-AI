@@ -1,20 +1,23 @@
 @import "tailwindcss";
 
+/* Novagate Skin Hub palette — forced dark */
 :root {
-  --background: #fbf7f4;
-  --foreground: #201815;
-  --card: #ffffff;
-  --card-foreground: #201815;
-  --muted: #f1e9e4;
-  --muted-foreground: #83746d;
-  --border: #e8ddd5;
-  --accent-from: #ff6b6b;
-  --accent-via: #f5487f;
-  --accent-to: #8b5cf6;
-  --accent-solid: #e63971;
-  --accent-solid-foreground: #ffffff;
-  --radius: 1.25rem;
-  --shadow-soft: 0 1px 2px rgba(32, 24, 21, 0.04), 0 8px 24px -12px rgba(32, 24, 21, 0.18);
+  --background: #000d0d;
+  --foreground: #fafafa;
+  --card: #0d1e1e;
+  --card-foreground: #fafafa;
+  --muted: #0a1818;
+  --muted-foreground: #94969c;
+  --border: #1a3333;
+  --accent-from: #04524a;
+  --accent-via: #1de4d0;
+  --accent-to: #62b5d1;
+  --accent-solid: #1de4d0;
+  --accent-solid-foreground: #000d0d;
+  --radius: 1rem;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 13, 13, 0.7);
+  --title-band-from: #0f3a33;
+  --title-band-to: #04524a;
 }
 
 @theme inline {
@@ -30,22 +33,9 @@
   --color-accent-to: var(--accent-to);
   --color-accent-solid: var(--accent-solid);
   --color-accent-solid-foreground: var(--accent-solid-foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-montserrat);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-fraunces);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #18110e;
-    --foreground: #f5ece7;
-    --card: #221a16;
-    --card-foreground: #f5ece7;
-    --muted: #2b2119;
-    --muted-foreground: #b3a199;
-    --border: #382b23;
-    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
-  }
+  --font-display: var(--font-oxanium);
 }
 
 body {
@@ -61,7 +51,44 @@ body {
 }
 
 .pulse-gradient-bg {
-  background-image: linear-gradient(100deg, var(--accent-from), var(--accent-via), var(--accent-to));
+  background-image: linear-gradient(135deg, var(--accent-from), var(--accent-via), var(--accent-to));
+}
+
+/* Novagate-style primary: dark fill + cyan ring */
+.nova-ring-btn {
+  background: #0a1616;
+  color: var(--foreground);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-solid) 55%, transparent),
+    0 0 20px -6px color-mix(in srgb, var(--accent-solid) 45%, transparent);
+}
+
+.nova-ring-btn:hover {
+  box-shadow:
+    0 0 0 1px var(--accent-solid),
+    0 0 28px -4px color-mix(in srgb, var(--accent-solid) 55%, transparent);
+  color: var(--accent-solid);
+}
+
+.suite-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--accent-solid) 35%, transparent);
+  background: color-mix(in srgb, var(--accent-solid) 8%, transparent);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-solid);
+}
+
+.suite-title-band {
+  background-image: linear-gradient(90deg, var(--title-band-from), var(--title-band-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .pulse-ring {

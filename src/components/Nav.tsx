@@ -14,11 +14,11 @@ export function Nav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/80 bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/75 backdrop-blur-md">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2.5">
           <Logo size={28} />
-          <span className="font-display text-xl italic tracking-tight">Puse</span>
+          <span className="font-display text-xl font-semibold tracking-tight">Puse</span>
         </Link>
         <div className="flex items-center gap-1">
           {LINKS.map((link) => {
@@ -29,7 +29,7 @@ export function Nav() {
                 href={link.href}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   active
-                    ? "bg-foreground text-background"
+                    ? "text-accent-solid shadow-[inset_0_-2px_0_0_var(--accent-solid)]"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >

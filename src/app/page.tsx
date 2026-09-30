@@ -104,8 +104,9 @@ export default function Home() {
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-28 px-6 py-16 sm:px-10">
       <section className="grid items-center gap-12 lg:grid-cols-2">
         <Reveal className="flex flex-col items-start gap-6">
-          <h1 className="font-display text-5xl italic leading-tight sm:text-6xl">
-            Find your skin&apos;s <span className="pulse-gradient-text not-italic">pulse</span>
+          <span className="suite-tag">YouCam × Puse</span>
+          <h1 className="font-display text-5xl font-semibold leading-tight tracking-tight sm:text-6xl">
+            Find your skin&apos;s <span className="pulse-gradient-text">pulse</span>
           </h1>
 
           <PulseWave className="h-8 w-64" />
@@ -137,7 +138,9 @@ export default function Home() {
 
       <section className="flex flex-col gap-16">
         <Reveal className="max-w-xl">
-          <h2 className="font-display text-3xl italic">Two capabilities, one flow</h2>
+          <h2 className="font-display text-3xl font-semibold tracking-tight">
+            Two capabilities, <span className="suite-title-band">one flow</span>
+          </h2>
           <p className="mt-2 text-muted-foreground">
             Not two disconnected demos — one selfie-driven shopping experience.
           </p>
@@ -145,10 +148,10 @@ export default function Home() {
 
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <Reveal className="flex flex-col items-start gap-4">
-            <span className="pulse-gradient-bg flex h-11 w-11 items-center justify-center rounded-full text-white">
+            <span className="pulse-gradient-bg flex h-11 w-11 items-center justify-center rounded-full text-[var(--accent-solid-foreground)]">
               <ScanFace className="h-5 w-5" strokeWidth={2} />
             </span>
-            <h3 className="font-display text-2xl italic">YouCam Skin AI</h3>
+            <h3 className="font-display text-2xl font-semibold tracking-tight">YouCam Skin AI</h3>
             <p className="text-muted-foreground">Dermatology-grade analysis from one selfie.</p>
             <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
               {[
@@ -157,7 +160,7 @@ export default function Home() {
                 "Matched to skincare that actually targets them",
               ].map((point) => (
                 <li key={point} className="flex gap-2">
-                  <span className="pulse-gradient-bg mt-2 h-1.5 w-1.5 shrink-0 rounded-full" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-solid" />
                   {point}
                 </li>
               ))}
@@ -173,10 +176,12 @@ export default function Home() {
             <OutfitMockup />
           </Reveal>
           <Reveal delay={150} className="order-1 flex flex-col items-start gap-4 lg:order-2">
-            <span className="pulse-gradient-bg flex h-11 w-11 items-center justify-center rounded-full text-white">
+            <span className="pulse-gradient-bg flex h-11 w-11 items-center justify-center rounded-full text-[var(--accent-solid-foreground)]">
               <Shirt className="h-5 w-5" strokeWidth={2} />
             </span>
-            <h3 className="font-display text-2xl italic">YouCam Virtual Try-On</h3>
+            <h3 className="font-display text-2xl font-semibold tracking-tight">
+              YouCam Virtual Try-On
+            </h3>
             <p className="text-muted-foreground">See the fit before you spend a dollar.</p>
             <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
               {[
@@ -185,7 +190,7 @@ export default function Home() {
                 "Compare the original and the result side by side",
               ].map((point) => (
                 <li key={point} className="flex gap-2">
-                  <span className="pulse-gradient-bg mt-2 h-1.5 w-1.5 shrink-0 rounded-full" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-solid" />
                   {point}
                 </li>
               ))}
@@ -196,21 +201,23 @@ export default function Home() {
 
       <section className="flex flex-col gap-8">
         <Reveal className="max-w-xl">
-          <h2 className="font-display text-3xl italic">How it works</h2>
+          <h2 className="font-display text-3xl font-semibold tracking-tight">How it works</h2>
           <p className="mt-2 text-muted-foreground">One photo in, real answers out.</p>
         </Reveal>
 
         <div className="grid gap-4 sm:grid-cols-3">
           {STEPS.map((step, i) => (
             <Reveal key={step.title} delay={i * 100}>
-              <Card className="flex h-full flex-col gap-3 p-6 transition hover:-translate-y-1">
+              <Card className="flex h-full flex-col gap-3 p-6 transition hover:-translate-y-1 hover:border-accent-solid/30">
                 <div className="flex items-center gap-3">
-                  <span className="pulse-gradient-bg flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white">
+                  <span className="pulse-gradient-bg flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[var(--accent-solid-foreground)]">
                     <step.icon className="h-4 w-4" strokeWidth={2} />
                   </span>
-                  <span className="text-xs font-medium text-muted-foreground">Step {i + 1}</span>
+                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Step {i + 1}
+                  </span>
                 </div>
-                <h3 className="font-display text-lg italic">{step.title}</h3>
+                <h3 className="font-display text-lg font-semibold">{step.title}</h3>
                 <p className="text-sm text-muted-foreground">{step.body}</p>
               </Card>
             </Reveal>
@@ -223,7 +230,7 @@ export default function Home() {
           <div className="grid gap-8 sm:grid-cols-3">
             {PROOF.map((stat) => (
               <div key={stat.label} className="flex flex-col items-center gap-1 text-center">
-                <span className="pulse-gradient-text font-display text-4xl italic">
+                <span className="pulse-gradient-text font-display text-4xl font-semibold">
                   {stat.value}
                 </span>
                 <span className="text-sm text-muted-foreground">{stat.label}</span>
@@ -235,7 +242,7 @@ export default function Home() {
 
       <section className="grid gap-10 lg:grid-cols-[1fr_2fr]">
         <Reveal>
-          <h2 className="font-display text-3xl italic">Questions</h2>
+          <h2 className="font-display text-3xl font-semibold tracking-tight">Questions</h2>
         </Reveal>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -245,9 +252,7 @@ export default function Home() {
                 <summary className="cursor-pointer list-none font-medium marker:content-none">
                   <span className="flex items-center justify-between gap-4">
                     {item.q}
-                    <span className="text-muted-foreground transition group-open:rotate-45">
-                      +
-                    </span>
+                    <span className="text-accent-solid transition group-open:rotate-45">+</span>
                   </span>
                 </summary>
                 <p className="mt-3 text-sm text-muted-foreground">{item.a}</p>
@@ -258,12 +263,11 @@ export default function Home() {
       </section>
 
       <Reveal>
-        <section className="flex flex-col items-center gap-6 rounded-[var(--radius)] bg-foreground p-12 text-center sm:p-16">
-          <h2 className="font-display text-3xl italic text-background sm:text-4xl">
-            Ready to find your{" "}
-            <span className="pulse-gradient-text not-italic">pulse</span>?
+        <section className="flex flex-col items-center gap-6 rounded-[var(--radius)] border border-accent-solid/20 bg-card p-12 text-center sm:p-16">
+          <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+            Ready to find your <span className="pulse-gradient-text">pulse</span>?
           </h2>
-          <p className="max-w-md text-background/70">
+          <p className="max-w-md text-muted-foreground">
             One selfie is all it takes to get real skin analysis and try on your next outfit.
           </p>
           <Link href="/analyze" className={buttonVariants("primary", "lg")}>
@@ -275,14 +279,15 @@ export default function Home() {
       <footer className="flex flex-col items-center gap-4 border-t border-border pt-8 text-center text-sm text-muted-foreground">
         <Logo size={28} />
         <p>Puse — built for the YouCam API Skin AI &amp; eCommerce VTO Hackathon.</p>
+        <p className="text-xs text-accent-solid/80">Powered by YouCam</p>
         <div className="flex gap-4">
-          <Link href="/analyze" className="flex items-center gap-1 hover:text-foreground">
+          <Link href="/analyze" className="flex items-center gap-1 hover:text-accent-solid">
             <Sparkles className="h-3.5 w-3.5" /> Skin AI
           </Link>
-          <Link href="/catalog" className="flex items-center gap-1 hover:text-foreground">
+          <Link href="/catalog" className="flex items-center gap-1 hover:text-accent-solid">
             <Shirt className="h-3.5 w-3.5" /> Try On
           </Link>
-          <Link href="/history" className="flex items-center gap-1 hover:text-foreground">
+          <Link href="/history" className="flex items-center gap-1 hover:text-accent-solid">
             <History className="h-3.5 w-3.5" /> History
           </Link>
         </div>

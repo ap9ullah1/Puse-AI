@@ -74,18 +74,19 @@ const products = [
     image: "",
     concern: "radiance",
   },
-  // Apparel: backed by YouCam's own predefined Clothes VTO templates
-  // (GET /s2s/v2.0/task/template/cloth), not custom reference images. Each
-  // product's `templateId` is a real, verified-working template id, and
-  // `image` is that template's official thumbnail — real, distinct product
-  // photography instead of a shared placeholder.
+  // Apparel: each refImageUrl is a real, distinct, verified-working garment
+  // photo — the official thumbnail of one of YouCam's predefined Clothes VTO
+  // templates (GET /s2s/v2.0/task/template/cloth), not a shared placeholder.
+  // Note: that endpoint's `template_id` is listing-only — the cloth-v4 task
+  // itself only accepts ref_file_url/ref_file_id/src_file_url, confirmed by
+  // testing template_id directly against the live API and having it rejected.
   {
     id: "white-shirt-and-jeans",
     kind: "apparel",
     name: "White Shirt & Jeans",
     price: 120,
     image: "https://app-cdn.makeupar.com/cms/54c04fb6-8a4c-454d-a75c-93500589c9aa/1773801599373/file.jpg",
-    templateId: "white_shirt_jeans_masculine_2",
+    refImageUrl: "https://app-cdn.makeupar.com/cms/54c04fb6-8a4c-454d-a75c-93500589c9aa/1773801599373/file.jpg",
     garmentCategory: "auto",
   },
   {
@@ -94,7 +95,7 @@ const products = [
     name: "Denim on Denim",
     price: 135,
     image: "https://app-cdn.makeupar.com/cms/6ac3f7ef-3a24-4cc6-a80f-23c26b82c2e3/1773801653289/file.jpg",
-    templateId: "denim_on_denim_masculine_2",
+    refImageUrl: "https://app-cdn.makeupar.com/cms/6ac3f7ef-3a24-4cc6-a80f-23c26b82c2e3/1773801653289/file.jpg",
     garmentCategory: "auto",
   },
   {
@@ -103,7 +104,7 @@ const products = [
     name: "Flowy Black Dress",
     price: 98,
     image: "https://app-cdn.makeupar.com/cms/dde157f1-6585-44e2-93c1-621042286366/1773798871609/file.jpg",
-    templateId: "flowy_black_dress_feminine",
+    refImageUrl: "https://app-cdn.makeupar.com/cms/dde157f1-6585-44e2-93c1-621042286366/1773798871609/file.jpg",
     garmentCategory: "auto",
   },
   {
@@ -112,7 +113,7 @@ const products = [
     name: "Classic Black Suit",
     price: 249,
     image: "https://app-cdn.makeupar.com/cms/527fcbdf-eb50-4408-bc02-b05d2a74f154/1773801683794/file.jpg",
-    templateId: "classic_black_suit_masculine_2",
+    refImageUrl: "https://app-cdn.makeupar.com/cms/527fcbdf-eb50-4408-bc02-b05d2a74f154/1773801683794/file.jpg",
     garmentCategory: "auto",
   },
 ];

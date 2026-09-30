@@ -9,9 +9,10 @@ export function buttonVariants(variant: ButtonVariant = "primary", size: ButtonS
     lg: "px-7 py-3.5 text-base",
   };
   const variants: Record<ButtonVariant, string> = {
-    primary: "pulse-gradient-bg text-white shadow-[var(--shadow-soft)] hover:brightness-105 active:brightness-95",
-    outline: "border border-border bg-card text-foreground hover:border-accent-solid/50 hover:bg-muted",
-    ghost: "text-muted-foreground hover:bg-muted hover:text-foreground",
+    primary: "nova-ring-btn",
+    outline:
+      "border border-border bg-card text-foreground hover:border-accent-solid/50 hover:text-accent-solid",
+    ghost: "text-muted-foreground hover:bg-muted hover:text-accent-solid",
   };
   return `${base} ${sizes[size]} ${variants[variant]}`;
 }
