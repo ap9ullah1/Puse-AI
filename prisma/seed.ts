@@ -7,15 +7,13 @@ import { PrismaClient } from "../src/generated/prisma/client";
 const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL ?? "file:./prisma/dev.db" });
 const prisma = new PrismaClient({ adapter });
 
-// Skincare thumbnails render via <ProductThumb> (generated on-brand tiles) — no
-// real product photography available yet, so `image` is intentionally unused.
 const products = [
   {
     id: "barrier-repair-cream",
     kind: "skincare",
     name: "Barrier Repair Cream",
     price: 32,
-    image: "",
+    image: "/images/skincare/barrier-repair-cream.jpg",
     concern: "texture",
   },
   {
@@ -23,7 +21,7 @@ const products = [
     kind: "skincare",
     name: "Pore-Refining Clay Mask",
     price: 24,
-    image: "",
+    image: "/images/skincare/pore-refining-clay-mask.jpg",
     concern: "pore",
   },
   {
@@ -31,7 +29,7 @@ const products = [
     kind: "skincare",
     name: "Retinal Night Serum",
     price: 48,
-    image: "",
+    image: "/images/skincare/retinal-night-serum.jpg",
     concern: "wrinkle",
   },
   {
@@ -39,7 +37,7 @@ const products = [
     kind: "skincare",
     name: "Clearing Salicylic Gel",
     price: 22,
-    image: "",
+    image: "/images/skincare/clearing-salicylic-gel.jpg",
     concern: "acne",
   },
   {
@@ -47,7 +45,7 @@ const products = [
     kind: "skincare",
     name: "Calm & Soothe Serum",
     price: 29,
-    image: "",
+    image: "/images/skincare/calm-and-soothe-serum.jpg",
     concern: "redness",
   },
   {
@@ -55,7 +53,7 @@ const products = [
     kind: "skincare",
     name: "Mattifying Toner",
     price: 19,
-    image: "",
+    image: "/images/skincare/mattifying-toner.jpg",
     concern: "oiliness",
   },
   {
@@ -63,7 +61,7 @@ const products = [
     kind: "skincare",
     name: "Deep Hydration Gel",
     price: 27,
-    image: "",
+    image: "/images/skincare/deep-hydration-gel.jpg",
     concern: "moisture",
   },
   {
@@ -71,15 +69,11 @@ const products = [
     kind: "skincare",
     name: "Vitamin C Brightening Drops",
     price: 34,
-    image: "",
+    image: "/images/skincare/vitamin-c-brightening-drops.jpg",
     concern: "radiance",
   },
-  // Apparel: each refImageUrl is a real, distinct, verified-working garment
-  // photo — the official thumbnail of one of YouCam's predefined Clothes VTO
-  // templates (GET /s2s/v2.0/task/template/cloth), not a shared placeholder.
-  // Note: that endpoint's `template_id` is listing-only — the cloth-v4 task
-  // itself only accepts ref_file_url/ref_file_id/src_file_url, confirmed by
-  // testing template_id directly against the live API and having it rejected.
+  // Apparel: garment photos from YouCam Clothes VTO template thumbnails
+  // (GET /s2s/v2.0/task/template/cloth). cloth-v4 accepts ref_file_url, not template_id.
   {
     id: "white-shirt-and-jeans",
     kind: "apparel",

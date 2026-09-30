@@ -14,7 +14,8 @@ const FRIENDLY_MESSAGES: Record<string, string> = {
   error_nail_too_small: "Your hand needs to take up more of the frame. Try moving closer.",
   invalid_parameter: "Something about that request wasn't quite right. Try again.",
   unknown_internal_error: "Something went wrong on our end. Give it another try in a moment.",
-  InvalidApiKey: "This app's API key isn't valid. Check YOUCAM_API_KEY in .env.local.",
+  InvalidApiKey:
+    "Production/local YOUCAM_API_KEY isn't valid. Update the key in your host env (and .env.local), then restart the app.",
   InactiveApiKey: "This app's API key is inactive. Check your YouCam account.",
   ExpiredApiKey: "This app's API key has expired. Generate a new one in your YouCam account.",
   InsufficientCredits:
@@ -30,6 +31,14 @@ export function friendlyYouCamError(
     const lower = fallbackMessage.toLowerCase();
     if (lower.includes("enough credit") || lower.includes("insufficient")) {
       return FRIENDLY_MESSAGES.InsufficientCredits;
+    }
+    if (
+      lower.includes("isn't recognized") ||
+      lower.includes("not recognized") ||
+      lower.includes("invalid api key") ||
+      lower.includes("invalidapikey")
+    ) {
+      return FRIENDLY_MESSAGES.InvalidApiKey;
     }
     return fallbackMessage;
   }

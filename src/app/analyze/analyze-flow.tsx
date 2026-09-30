@@ -6,7 +6,7 @@ import { usePolledTask } from "@/lib/use-polled-task";
 import { friendlyYouCamError } from "@/lib/youcam/errors";
 import { Card } from "@/components/ui/Card";
 import { ScoreRing } from "@/components/ui/ScoreRing";
-import { ProductThumb } from "@/components/ui/ProductThumb";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { Reveal } from "@/components/Reveal";
 import type { SkincareProduct } from "@/lib/products";
 import type { SkinAnalysisPollResponse } from "@/lib/youcam/types";
@@ -167,9 +167,11 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
                 key={product.id}
                 className="overflow-hidden p-3 transition hover:border-accent-solid/40 hover:shadow-[0_0_24px_-12px_var(--accent-solid)]"
               >
-                <ProductThumb
+                <ProductImage
                   id={product.id}
                   kind="skincare"
+                  name={product.name}
+                  image={product.image}
                   className="mb-2 h-32 w-full rounded-[calc(var(--radius)-0.4rem)]"
                 />
                 <p className="text-sm font-medium">{product.name}</p>

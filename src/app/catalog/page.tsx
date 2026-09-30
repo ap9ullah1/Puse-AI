@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getAllProducts } from "@/lib/products";
 import { Card } from "@/components/ui/Card";
-import { ProductThumb } from "@/components/ui/ProductThumb";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { Reveal } from "@/components/Reveal";
 
 export const dynamic = "force-dynamic";
@@ -33,11 +33,12 @@ export default async function CatalogPage() {
             <Reveal key={product.id} delay={i * 60}>
               <Link href={`/try-on/${product.id}`}>
                 <Card className="overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)] object-cover"
+                  <ProductImage
+                    id={product.id}
+                    kind="apparel"
+                    name={product.name}
+                    image={product.image}
+                    className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
                   />
                   <p className="text-sm font-medium">{product.name}</p>
                   <p className="text-sm text-muted-foreground">${product.price}</p>
@@ -56,9 +57,11 @@ export default async function CatalogPage() {
           {skincare.map((product, i) => (
             <Reveal key={product.id} delay={i * 60}>
               <Card className="overflow-hidden p-3">
-                <ProductThumb
+                <ProductImage
                   id={product.id}
                   kind="skincare"
+                  name={product.name}
+                  image={product.image}
                   className="mb-2 h-40 w-full rounded-[calc(var(--radius)-0.4rem)]"
                 />
                 <p className="text-sm font-medium">{product.name}</p>
