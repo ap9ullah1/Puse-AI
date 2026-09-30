@@ -6,6 +6,7 @@ import { usePolledTask } from "@/lib/use-polled-task";
 import { friendlyYouCamError } from "@/lib/youcam/errors";
 import { Card } from "@/components/ui/Card";
 import { LightboxImage } from "@/components/ui/LightboxImage";
+import { SaveResultsBanner } from "@/components/SaveResultsBanner";
 import { Reveal } from "@/components/Reveal";
 import type { ApparelProduct } from "@/lib/products";
 import type { ClothTryOnPollResponse } from "@/lib/youcam/types";
@@ -106,6 +107,9 @@ export function TryOnFlow({ product }: { product: ApparelProduct }) {
                   className="h-80 w-60 rounded-[var(--radius)] shadow-[var(--shadow-soft)]"
                 />
                 <span className="text-xs text-muted-foreground">With {product.name}</span>
+                <div className="w-full max-w-md pt-4">
+                  <SaveResultsBanner kind="try-on" />
+                </div>
               </>
             )}
           </div>

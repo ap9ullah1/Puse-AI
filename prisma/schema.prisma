@@ -7,6 +7,17 @@ datasource db {
   provider = "sqlite"
 }
 
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  skinResults  SkinAnalysisResult[]
+  tryOnResults TryOnResult[]
+}
+
 model Product {
   id              String  @id
   kind            String
@@ -23,24 +34,31 @@ model Product {
 model SkinAnalysisResult {
   id        String   @id @default(cuid())
   sessionId String
+  userId    String?
   taskId    String   @unique
   concerns  String
   createdAt DateTime @default(now())
 
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   @@index([sessionId])
+  @@index([userId])
 }
 
 model TryOnResult {
   id        String   @id @default(cuid())
   sessionId String
+  userId    String?
   taskId    String   @unique
   productId String
   resultUrl String
   createdAt DateTime @default(now())
 
   product Product @relation(fields: [productId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([sessionId])
+  @@index([userId])
 }
 
 /// Visitor / activity events for the owner dashboard

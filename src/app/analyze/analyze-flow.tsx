@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { LightboxImage } from "@/components/ui/LightboxImage";
+import { SaveResultsBanner } from "@/components/SaveResultsBanner";
 import { Reveal } from "@/components/Reveal";
 import type { SkincareProduct } from "@/lib/products";
 import type { SkinAnalysisPollResponse } from "@/lib/youcam/types";
@@ -147,6 +148,7 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
                     />
                   ))}
                 </div>
+                <SaveResultsBanner kind="skin" />
               </div>
             )}
           </div>

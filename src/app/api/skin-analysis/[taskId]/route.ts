@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { trackEvent } from "@/lib/analytics";
+import { getCurrentUserId } from "@/lib/auth";
 import { getSkinAnalysisTask } from "@/lib/youcam/client";
 import { prisma } from "@/lib/db";
 import { getOrCreateSessionId } from "@/lib/session";
@@ -15,15 +16,17 @@ export async function GET(
 
     if (data.task_status === "success" && data.results) {
       const sessionId = await getOrCreateSessionId();
+      const userId = await getCurrentUserId();
       const existing = await prisma.skinAnalysisResult.findUnique({ where: { taskId } });
       await prisma.skinAnalysisResult.upsert({
         where: { taskId },
         create: {
           taskId,
           sessionId,
+          userId: userId ?? undefined,
           concerns: JSON.stringify(data.results.output),
         },
-        update: {},
+        update: userId && !existing?.userId ? { userId } : {},
       });
       if (!existing) {
         void trackEvent({
@@ -32,7 +35,7 @@ export async function GET(
           path: "/analyze",
           label: "Finished Skin AI analysis",
           sessionId,
-          meta: { taskId },
+          meta: { taskId, userId },
         });
       }
     }
