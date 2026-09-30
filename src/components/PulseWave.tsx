@@ -1,11 +1,6 @@
 export function PulseWave({ className = "" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 600 120"
-      fill="none"
-      className={className}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 600 120" fill="none" className={className} aria-hidden="true">
       <defs>
         <linearGradient id="pulse-line" x1="0" y1="0" x2="600" y2="0" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#ff6b6b" />
@@ -19,6 +14,9 @@ export function PulseWave({ className = "" }: { className?: string }) {
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
+        pathLength={1}
+        strokeDasharray={1}
+        className="pulse-draw"
       />
     </svg>
   );
