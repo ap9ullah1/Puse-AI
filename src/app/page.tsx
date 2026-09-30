@@ -75,10 +75,7 @@ export default function Home() {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-24 px-6 py-20">
       <section className="flex flex-col items-center gap-6 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-[var(--shadow-soft)]">
-          <span className="pulse-gradient-bg pulse-ring h-2 w-2 rounded-full" />
-          Built with the YouCam API
-        </span>
+
 
         <h1 className="font-display text-5xl italic leading-tight sm:text-6xl">
           Find your skin&apos;s <span className="pulse-gradient-text not-italic">pulse</span>

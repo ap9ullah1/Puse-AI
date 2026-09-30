@@ -18,26 +18,7 @@ export default function OpengraphImage() {
           padding: "0 80px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            fontSize: 22,
-            color: "#83746d",
-            marginBottom: 32,
-          }}
-        >
-          <div
-            style={{
-              width: 14,
-              height: 14,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, #ff6b6b, #f5487f, #8b5cf6)",
-            }}
-          />
-          Built with the YouCam API
-        </div>
+
         <div
           style={{
             display: "flex",
