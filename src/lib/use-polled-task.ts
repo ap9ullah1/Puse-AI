@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 type TaskBody = {
   task_status: "running" | "success" | "error";
   error?: string | null;
+  error_message?: string | null;
 };
 
-type Settled<T> = { kind: "success"; data: T } | { kind: "error"; error: string };
+type Settled<T> = { kind: "success" | "error"; data: T };
 
 export function usePolledTask<T extends TaskBody>(endpoint: string | null) {
   const [settled, setSettled] = useState<Settled<T> | null>(null);
@@ -25,17 +26,17 @@ export function usePolledTask<T extends TaskBody>(endpoint: string | null) {
         if (cancelled) return;
 
         if (!res.ok) {
-          setSettled({ kind: "error", error: body.error ?? "Request failed" });
+          setSettled({ kind: "error", data: { task_status: "error", error: body.error } as T });
           return;
         }
 
         if (body.task_status === "success") {
-          setSettled({ kind: "success", data: body });
+          setSettled({ kind: "success", data: body as T });
           return;
         }
 
         if (body.task_status === "error") {
-          setSettled({ kind: "error", error: body.error ?? "Task failed" });
+          setSettled({ kind: "error", data: body as T });
           return;
         }
 
@@ -51,16 +52,12 @@ export function usePolledTask<T extends TaskBody>(endpoint: string | null) {
   }, [endpoint]);
 
   if (!endpoint) {
-    return { status: "idle" as const, data: null, error: null };
+    return { status: "idle" as const, data: null as T | null };
   }
 
   if (!settled) {
-    return { status: "running" as const, data: null, error: null };
+    return { status: "running" as const, data: null as T | null };
   }
 
-  if (settled.kind === "success") {
-    return { status: "success" as const, data: settled.data, error: null };
-  }
-
-  return { status: "error" as const, data: null, error: settled.error };
+  return { status: settled.kind, data: settled.data };
 }

@@ -36,6 +36,7 @@ export type SkinAnalysisPollResponse = {
     output: SkinConcernResult[];
   };
   error?: string | null;
+  error_message?: string | null;
 };
 
 export type ClothTryOnPollResponse = {
@@ -44,4 +45,5 @@ export type ClothTryOnPollResponse = {
     url: string;
   };
   error?: string | null;
+  error_message?: string | null;
 };

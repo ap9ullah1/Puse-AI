@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbf7f4;
+  --foreground: #201815;
+  --card: #ffffff;
+  --card-foreground: #201815;
+  --muted: #f1e9e4;
+  --muted-foreground: #83746d;
+  --border: #e8ddd5;
+  --accent-from: #ff6b6b;
+  --accent-via: #f5487f;
+  --accent-to: #8b5cf6;
+  --accent-solid: #e63971;
+  --accent-solid-foreground: #ffffff;
+  --radius: 1.25rem;
+  --shadow-soft: 0 1px 2px rgba(32, 24, 21, 0.04), 0 8px 24px -12px rgba(32, 24, 21, 0.18);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent-from: var(--accent-from);
+  --color-accent-via: var(--accent-via);
+  --color-accent-to: var(--accent-to);
+  --color-accent-solid: var(--accent-solid);
+  --color-accent-solid-foreground: var(--accent-solid-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #18110e;
+    --foreground: #f5ece7;
+    --card: #221a16;
+    --card-foreground: #f5ece7;
+    --muted: #2b2119;
+    --muted-foreground: #b3a199;
+    --border: #382b23;
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+.pulse-gradient-text {
+  background-image: linear-gradient(100deg, var(--accent-from), var(--accent-via), var(--accent-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pulse-gradient-bg {
+  background-image: linear-gradient(100deg, var(--accent-from), var(--accent-via), var(--accent-to));
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
 }

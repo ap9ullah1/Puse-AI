@@ -18,10 +18,10 @@ export default async function TryOnPage({
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-16">
       <div>
-        <Link href="/catalog" className="text-sm text-zinc-500 hover:underline">
+        <Link href="/catalog" className="text-sm text-muted-foreground hover:text-foreground">
           ← Back to catalog
         </Link>
-        <h1 className="mt-2 text-3xl font-semibold">Try on: {product.name}</h1>
+        <h1 className="mt-3 font-display text-4xl italic">Try on: {product.name}</h1>
       </div>
       <TryOnFlow product={product} />
     </main>

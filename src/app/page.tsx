@@ -1,38 +1,55 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-10 px-6 py-24">
-      <div>
-        <p className="text-sm font-medium uppercase tracking-wide text-zinc-500">
+    <main className="mx-auto flex flex-1 w-full max-w-3xl flex-col items-center justify-center gap-12 px-6 py-24 text-center">
+      <div className="flex flex-col items-center gap-6">
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-[var(--shadow-soft)]">
+          <span className="pulse-gradient-bg pulse-ring h-2 w-2 rounded-full" />
           Built with the YouCam API
-        </p>
-        <h1 className="mt-2 text-4xl font-semibold leading-tight">Puse</h1>
-        <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
-          Get your skin&apos;s real pulse, then shop for it. Upload a selfie for an AI skin
-          analysis, get matched skincare, and try on apparel before you buy — powered by YouCam
-          Skin AI and Virtual Try-On.
+        </span>
+
+        <h1 className="font-display text-5xl italic leading-tight sm:text-6xl">
+          Find your skin&apos;s <span className="pulse-gradient-text not-italic">pulse</span>
+        </h1>
+
+        <p className="max-w-xl text-lg text-muted-foreground">
+          Upload a selfie for a real AI skin analysis, get matched to skincare that actually
+          targets your concerns, and try on apparel before you buy — powered by YouCam Skin AI
+          and Virtual Try-On.
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row">
+      <div className="grid w-full gap-4 sm:grid-cols-2">
         <Link
           href="/analyze"
-          className="flex-1 rounded-2xl bg-black px-6 py-5 text-center text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+          className="group flex flex-col items-start gap-3 rounded-[var(--radius)] border border-border bg-card p-6 text-left shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-accent-solid/40"
         >
-          <p className="text-lg font-medium">Analyze my skin</p>
-          <p className="mt-1 text-sm opacity-70">YouCam Skin AI</p>
+          <span className="pulse-gradient-bg flex h-10 w-10 items-center justify-center rounded-full text-lg text-white">
+            ✦
+          </span>
+          <span className="font-display text-xl italic">Analyze my skin</span>
+          <span className="text-sm text-muted-foreground">
+            Eight concerns scored by YouCam Skin AI
+          </span>
         </Link>
+
         <Link
           href="/catalog"
-          className="flex-1 rounded-2xl border border-zinc-300 px-6 py-5 text-center transition hover:border-black dark:border-zinc-700 dark:hover:border-white"
+          className="group flex flex-col items-start gap-3 rounded-[var(--radius)] border border-border bg-card p-6 text-left shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-accent-solid/40"
         >
-          <p className="text-lg font-medium">Try on apparel</p>
-          <p className="mt-1 text-sm opacity-70">YouCam Virtual Try-On</p>
+          <span className="pulse-gradient-bg flex h-10 w-10 items-center justify-center rounded-full text-lg text-white">
+            ⟳
+          </span>
+          <span className="font-display text-xl italic">Try on apparel</span>
+          <span className="text-sm text-muted-foreground">
+            See it on you first, with YouCam Virtual Try-On
+          </span>
         </Link>
       </div>
 
-      <Link href="/history" className="text-center text-sm text-zinc-500 hover:underline">
+      <Link href="/history" className={buttonVariants("ghost", "md")}>
         View your history →
       </Link>
     </main>

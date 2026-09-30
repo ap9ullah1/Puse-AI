@@ -3,8 +3,16 @@
 import { useState } from "react";
 import { ImageUploader } from "@/components/ImageUploader";
 import { usePolledTask } from "@/lib/use-polled-task";
+import { friendlyYouCamError } from "@/lib/youcam/errors";
+import { Card } from "@/components/ui/Card";
 import type { ApparelProduct } from "@/lib/products";
 import type { ClothTryOnPollResponse } from "@/lib/youcam/types";
+
+const GUIDANCE = [
+  "Full body, standing, forward-facing",
+  "Shoulders and feet both visible",
+  "Plain background works best",
+];
 
 export function TryOnFlow({ product }: { product: ApparelProduct }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -13,7 +21,7 @@ export function TryOnFlow({ product }: { product: ApparelProduct }) {
   const [createError, setCreateError] = useState<string | null>(null);
 
   const endpoint = taskId ? `/api/try-on/${taskId}?productId=${encodeURIComponent(product.id)}` : null;
-  const { status, data, error } = usePolledTask<ClothTryOnPollResponse>(endpoint);
+  const { status, data } = usePolledTask<ClothTryOnPollResponse>(endpoint);
 
   async function handleUploaded(fileId: string, preview: string) {
     setPreviewUrl(preview);
@@ -35,41 +43,67 @@ export function TryOnFlow({ product }: { product: ApparelProduct }) {
     }
   }
 
+  function retry() {
+    setPreviewUrl(null);
+    setTaskId(null);
+    setCreateError(null);
+  }
+
+  const taskErrorMessage =
+    status === "error" ? friendlyYouCamError(data?.error, data?.error_message) : null;
+
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-zinc-600 dark:text-zinc-400">
-        Upload a full-body photo, facing forward. YouCam VTO renders {product.name} on you in a few
-        seconds.
+      <p className="text-muted-foreground">
+        Upload a full-body photo and YouCam VTO renders {product.name} on you in a few seconds.
       </p>
 
-      {!previewUrl && <ImageUploader label="Upload a full-body photo" onUploaded={handleUploaded} />}
+      {!previewUrl && (
+        <ImageUploader label="Upload a full-body photo" guidance={GUIDANCE} onUploaded={handleUploaded} />
+      )}
 
       {previewUrl && (
         <div className="flex flex-col gap-6 sm:flex-row">
           <div className="flex flex-col items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={previewUrl} alt="Your photo" className="h-80 w-60 rounded-2xl object-cover" />
-            <span className="text-xs text-zinc-500">Original</span>
+            <img
+              src={previewUrl}
+              alt="Your photo"
+              className="h-80 w-60 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+            />
+            <span className="text-xs text-muted-foreground">Original</span>
           </div>
 
-          <div className="flex flex-1 flex-col items-center gap-2">
+          <div className="flex flex-1 flex-col items-center gap-3">
             {(creating || status === "running") && (
-              <div className="flex h-80 w-60 items-center justify-center rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700">
-                <p className="text-sm text-zinc-500">Rendering…</p>
+              <div className="flex h-80 w-60 flex-col items-center justify-center gap-3 rounded-[var(--radius)] border border-dashed border-border">
+                <span className="pulse-gradient-bg pulse-ring h-3 w-3 rounded-full" />
+                <p className="text-sm text-muted-foreground">Rendering…</p>
               </div>
             )}
-            {(createError || (status === "error" && error)) && (
-              <p className="text-red-600">{createError ?? error}</p>
+
+            {(createError || taskErrorMessage) && (
+              <Card className="flex w-60 flex-col gap-3 p-5 text-center">
+                <p className="text-sm text-accent-solid">{createError ?? taskErrorMessage}</p>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="self-center text-sm font-medium text-foreground underline underline-offset-4"
+                >
+                  Try another photo
+                </button>
+              </Card>
             )}
+
             {status === "success" && data?.results && (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={data.results.url}
                   alt={`${product.name} try-on result`}
-                  className="h-80 w-60 rounded-2xl object-cover"
+                  className="h-80 w-60 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
                 />
-                <span className="text-xs text-zinc-500">With {product.name}</span>
+                <span className="text-xs text-muted-foreground">With {product.name}</span>
               </>
             )}
           </div>

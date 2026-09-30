@@ -1,17 +1,20 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Card } from "./ui/Card";
 
 type ImageUploaderProps = {
   label: string;
+  guidance: string[];
   onUploaded: (fileId: string, previewUrl: string) => void;
   disabled?: boolean;
 };
 
-export function ImageUploader({ label, onUploaded, disabled }: ImageUploaderProps) {
+export function ImageUploader({ label, guidance, onUploaded, disabled }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<"idle" | "uploading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [dragActive, setDragActive] = useState(false);
 
   async function handleFile(file: File) {
     setStatus("uploading");
@@ -34,7 +37,31 @@ export function ImageUploader({ label, onUploaded, disabled }: ImageUploaderProp
   }
 
   return (
-    <div className="flex flex-col items-start gap-3">
+    <Card
+      className={`flex flex-col items-center gap-5 border-dashed p-8 text-center transition ${
+        dragActive ? "border-accent-solid bg-muted" : ""
+      }`}
+      onDragOver={(e) => {
+        e.preventDefault();
+        if (!disabled) setDragActive(true);
+      }}
+      onDragLeave={() => setDragActive(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragActive(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file && !disabled) void handleFile(file);
+      }}
+    >
+      <ul className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+        {guidance.map((tip) => (
+          <li key={tip} className="flex items-center gap-2">
+            <span className="pulse-gradient-bg h-1.5 w-1.5 shrink-0 rounded-full" />
+            {tip}
+          </li>
+        ))}
+      </ul>
+
       <input
         ref={inputRef}
         type="file"
@@ -46,15 +73,19 @@ export function ImageUploader({ label, onUploaded, disabled }: ImageUploaderProp
           if (file) void handleFile(file);
         }}
       />
+
       <button
         type="button"
         disabled={disabled || status === "uploading"}
         onClick={() => inputRef.current?.click()}
-        className="rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition disabled:opacity-50 dark:bg-white dark:text-black"
+        className="pulse-gradient-bg inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white shadow-[var(--shadow-soft)] transition hover:brightness-105 disabled:opacity-50"
       >
         {status === "uploading" ? "Uploading…" : label}
       </button>
-      {status === "error" && <p className="text-sm text-red-600">{errorMessage}</p>}
-    </div>
+
+      <p className="text-xs text-muted-foreground">or drag and drop a photo here</p>
+
+      {status === "error" && <p className="text-sm text-accent-solid">{errorMessage}</p>}
+    </Card>
   );
 }

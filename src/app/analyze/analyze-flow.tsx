@@ -3,8 +3,18 @@
 import { useMemo, useState } from "react";
 import { ImageUploader } from "@/components/ImageUploader";
 import { usePolledTask } from "@/lib/use-polled-task";
+import { friendlyYouCamError } from "@/lib/youcam/errors";
+import { Card } from "@/components/ui/Card";
+import { ScoreRing } from "@/components/ui/ScoreRing";
+import { ProductThumb } from "@/components/ui/ProductThumb";
 import type { SkincareProduct } from "@/lib/products";
 import type { SkinAnalysisPollResponse } from "@/lib/youcam/types";
+
+const GUIDANCE = [
+  "Face fills most of the frame",
+  "Look straight at the camera",
+  "Good, even lighting",
+];
 
 export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincareProduct[] }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -13,7 +23,7 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
   const [createError, setCreateError] = useState<string | null>(null);
 
   const endpoint = taskId ? `/api/skin-analysis/${taskId}` : null;
-  const { status, data, error } = usePolledTask<SkinAnalysisPollResponse>(endpoint);
+  const { status, data } = usePolledTask<SkinAnalysisPollResponse>(endpoint);
 
   async function handleUploaded(fileId: string, preview: string) {
     setPreviewUrl(preview);
@@ -35,43 +45,70 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
     }
   }
 
-  const topConcerns = useMemo(() => {
+  function retry() {
+    setPreviewUrl(null);
+    setTaskId(null);
+    setCreateError(null);
+  }
+
+  const sortedConcerns = useMemo(() => {
     if (!data?.results) return [];
-    return [...data.results.output].sort((a, b) => a.ui_score - b.ui_score).slice(0, 3);
+    return [...data.results.output].sort((a, b) => a.ui_score - b.ui_score);
   }, [data]);
+
+  const topConcerns = sortedConcerns.slice(0, 3);
 
   const recommended = useMemo(() => {
     const concernTypes = new Set(topConcerns.map((c) => c.type));
     return skincareProducts.filter((p) => concernTypes.has(p.concern));
   }, [topConcerns, skincareProducts]);
 
+  const taskErrorMessage =
+    status === "error" ? friendlyYouCamError(data?.error, data?.error_message) : null;
+
   return (
     <>
-      {!previewUrl && <ImageUploader label="Upload a selfie" onUploaded={handleUploaded} />}
+      {!previewUrl && (
+        <ImageUploader label="Upload a selfie" guidance={GUIDANCE} onUploaded={handleUploaded} />
+      )}
 
       {previewUrl && (
         <div className="flex flex-col gap-6 sm:flex-row">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={previewUrl} alt="Uploaded selfie" className="h-64 w-64 rounded-2xl object-cover" />
+          <img
+            src={previewUrl}
+            alt="Uploaded selfie"
+            className="h-64 w-64 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+          />
           <div className="flex-1">
-            {(creating || status === "running") && <p>Analyzing your skin…</p>}
-            {(createError || (status === "error" && error)) && (
-              <p className="text-red-600">{createError ?? error}</p>
+            {(creating || status === "running") && (
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <span className="pulse-gradient-bg pulse-ring h-2.5 w-2.5 rounded-full" />
+                Analyzing your skin…
+              </div>
             )}
+
+            {(createError || taskErrorMessage) && (
+              <Card className="flex flex-col gap-3 p-5">
+                <p className="text-sm text-accent-solid">{createError ?? taskErrorMessage}</p>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="self-start text-sm font-medium text-foreground underline underline-offset-4"
+                >
+                  Try another photo
+                </button>
+              </Card>
+            )}
+
             {status === "success" && data?.results && (
-              <div className="flex flex-col gap-3">
-                <h2 className="text-xl font-semibold">Top concerns</h2>
-                <ul className="flex flex-col gap-2">
+              <div className="flex flex-col gap-5">
+                <h2 className="font-display text-2xl italic">Top concerns</h2>
+                <div className="flex flex-wrap gap-6">
                   {topConcerns.map((concern) => (
-                    <li
-                      key={concern.type}
-                      className="flex items-center justify-between rounded-lg border border-zinc-200 px-4 py-2 dark:border-zinc-800"
-                    >
-                      <span className="capitalize">{concern.type.replace(/_/g, " ")}</span>
-                      <span className="font-mono text-sm text-zinc-500">{concern.ui_score}/100</span>
-                    </li>
+                    <ScoreRing key={concern.type} score={concern.ui_score} label={concern.type.replace(/_/g, " ")} />
                   ))}
-                </ul>
+                </div>
               </div>
             )}
           </div>
@@ -80,19 +117,18 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
 
       {recommended.length > 0 && (
         <div>
-          <h2 className="mb-4 text-xl font-semibold">Recommended for you</h2>
+          <h2 className="mb-4 font-display text-2xl italic">Recommended for you</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             {recommended.map((product) => (
-              <div key={product.id} className="rounded-xl border border-zinc-200 p-3 dark:border-zinc-800">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="mb-2 h-32 w-full rounded-lg object-cover"
+              <Card key={product.id} className="overflow-hidden p-3">
+                <ProductThumb
+                  id={product.id}
+                  kind="skincare"
+                  className="mb-2 h-32 w-full rounded-[calc(var(--radius)-0.4rem)]"
                 />
                 <p className="text-sm font-medium">{product.name}</p>
-                <p className="text-sm text-zinc-500">${product.price}</p>
-              </div>
+                <p className="text-sm text-muted-foreground">${product.price}</p>
+              </Card>
             ))}
           </div>
         </div>
