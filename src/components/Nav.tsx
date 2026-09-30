@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "./Logo";
 
 const LINKS = [
   { href: "/analyze", label: "Skin AI" },
@@ -15,8 +16,9 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/80 backdrop-blur">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-xl italic tracking-tight">
-          Puse
+        <Link href="/" className="flex items-center gap-2.5">
+          <Logo size={28} />
+          <span className="font-display text-xl italic tracking-tight">Puse</span>
         </Link>
         <div className="flex items-center gap-1">
           {LINKS.map((link) => {
