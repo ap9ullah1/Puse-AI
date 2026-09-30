@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { trackEvent } from "@/lib/analytics";
 import { getSkinAnalysisTask } from "@/lib/youcam/client";
 import { prisma } from "@/lib/db";
 import { getOrCreateSessionId } from "@/lib/session";
@@ -14,6 +15,7 @@ export async function GET(
 
     if (data.task_status === "success" && data.results) {
       const sessionId = await getOrCreateSessionId();
+      const existing = await prisma.skinAnalysisResult.findUnique({ where: { taskId } });
       await prisma.skinAnalysisResult.upsert({
         where: { taskId },
         create: {
@@ -23,6 +25,16 @@ export async function GET(
         },
         update: {},
       });
+      if (!existing) {
+        void trackEvent({
+          request: _request,
+          action: "skin_analysis_complete",
+          path: "/analyze",
+          label: "Finished Skin AI analysis",
+          sessionId,
+          meta: { taskId },
+        });
+      }
     }
 
     return NextResponse.json(data);

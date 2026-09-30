@@ -31,19 +31,20 @@ export default async function CatalogPage() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {apparel.map((product, i) => (
             <Reveal key={product.id} delay={i * 60}>
-              <Link href={`/try-on/${product.id}`}>
-                <Card className="overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
-                  <ProductImage
-                    id={product.id}
-                    kind="apparel"
-                    name={product.name}
-                    image={product.image}
-                    className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
-                  />
+              <Card className="overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
+                <ProductImage
+                  id={product.id}
+                  kind="apparel"
+                  name={product.name}
+                  image={product.image}
+                  className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
+                />
+                <Link href={`/try-on/${product.id}`} className="block hover:text-accent-solid">
                   <p className="text-sm font-medium">{product.name}</p>
                   <p className="text-sm text-muted-foreground">${product.price}</p>
-                </Card>
-              </Link>
+                  <p className="mt-1 text-xs font-medium text-accent-solid">Try on →</p>
+                </Link>
+              </Card>
             </Reveal>
           ))}
         </div>

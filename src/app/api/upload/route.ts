@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { trackEvent } from "@/lib/analytics";
 import { uploadImage } from "@/lib/youcam/client";
 
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/jpg", "image/png"]);
@@ -34,6 +35,13 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const contentType = ALLOWED_TYPES.has(type) ? type.replace("image/jpg", "image/jpeg") : "image/jpeg";
     const fileId = await uploadImage(buffer, contentType, file.name || "upload.jpg");
+    void trackEvent({
+      request,
+      action: "upload",
+      path: "/api/upload",
+      label: "Uploaded a photo",
+      meta: { bytes: file.size, type: contentType },
+    });
     return NextResponse.json({ fileId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";

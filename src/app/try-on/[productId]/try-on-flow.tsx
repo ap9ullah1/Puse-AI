@@ -5,6 +5,7 @@ import { ImageUploader } from "@/components/ImageUploader";
 import { usePolledTask } from "@/lib/use-polled-task";
 import { friendlyYouCamError } from "@/lib/youcam/errors";
 import { Card } from "@/components/ui/Card";
+import { LightboxImage } from "@/components/ui/LightboxImage";
 import { Reveal } from "@/components/Reveal";
 import type { ApparelProduct } from "@/lib/products";
 import type { ClothTryOnPollResponse } from "@/lib/youcam/types";
@@ -68,11 +69,10 @@ export function TryOnFlow({ product }: { product: ApparelProduct }) {
       {previewUrl && (
         <div className="mx-auto flex w-full max-w-2xl flex-col justify-center gap-10 sm:flex-row">
           <div className="flex flex-col items-center gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <LightboxImage
               src={previewUrl}
               alt="Your photo"
-              className="h-80 w-60 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+              className="h-80 w-60 rounded-[var(--radius)] shadow-[var(--shadow-soft)]"
             />
             <span className="text-xs text-muted-foreground">Original</span>
           </div>
@@ -100,11 +100,10 @@ export function TryOnFlow({ product }: { product: ApparelProduct }) {
 
             {status === "success" && data?.results && (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <LightboxImage
                   src={data.results.url}
                   alt={`${product.name} try-on result`}
-                  className="h-80 w-60 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+                  className="h-80 w-60 rounded-[var(--radius)] shadow-[var(--shadow-soft)]"
                 />
                 <span className="text-xs text-muted-foreground">With {product.name}</span>
               </>

@@ -42,3 +42,25 @@ model TryOnResult {
 
   @@index([sessionId])
 }
+
+/// Visitor / activity events for the owner dashboard
+model VisitEvent {
+  id        String   @id @default(cuid())
+  sessionId String
+  action    String
+  path      String?
+  label     String?
+  ip        String?
+  country   String?
+  region    String?
+  city      String?
+  referer   String?
+  userAgent String?
+  meta      String?
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([country])
+}

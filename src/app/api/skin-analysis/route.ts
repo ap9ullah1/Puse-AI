@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { trackEvent } from "@/lib/analytics";
 import { createSkinAnalysisTask } from "@/lib/youcam/client";
 
 export async function POST(request: Request) {
@@ -20,6 +21,13 @@ export async function POST(request: Request) {
 
   try {
     const taskId = await createSkinAnalysisTask(fileId);
+    void trackEvent({
+      request,
+      action: "skin_analysis_start",
+      path: "/analyze",
+      label: "Started Skin AI analysis",
+      meta: { taskId },
+    });
     return NextResponse.json({ taskId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Could not start analysis";

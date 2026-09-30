@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { trackEvent } from "@/lib/analytics";
 import { createClothTryOnTask } from "@/lib/youcam/client";
 import { getApparelProductById } from "@/lib/products";
 
@@ -20,6 +21,13 @@ export async function POST(request: Request) {
       srcFileId: fileId,
       garmentCategory: product.garmentCategory,
       refImageUrl: product.refImageUrl,
+    });
+    void trackEvent({
+      request,
+      action: "try_on_start",
+      path: `/try-on/${productId}`,
+      label: `Started try-on: ${product.name}`,
+      meta: { taskId, productId, productName: product.name },
     });
     return NextResponse.json({ taskId });
   } catch (err) {

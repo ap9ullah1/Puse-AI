@@ -7,6 +7,7 @@ import { friendlyYouCamError } from "@/lib/youcam/errors";
 import { Card } from "@/components/ui/Card";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { ProductImage } from "@/components/ui/ProductImage";
+import { LightboxImage } from "@/components/ui/LightboxImage";
 import { Reveal } from "@/components/Reveal";
 import type { SkincareProduct } from "@/lib/products";
 import type { SkinAnalysisPollResponse } from "@/lib/youcam/types";
@@ -88,11 +89,10 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
 
       {previewUrl && (
         <div className="flex flex-col gap-8 sm:flex-row">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <LightboxImage
             src={previewUrl}
             alt="Uploaded selfie"
-            className="h-72 w-72 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)] ring-1 ring-accent-solid/20"
+            className="h-72 w-72 shrink-0 rounded-[var(--radius)] shadow-[var(--shadow-soft)] ring-1 ring-accent-solid/20"
           />
           <div className="flex-1">
             {(creating || (taskId && status === "running")) && (

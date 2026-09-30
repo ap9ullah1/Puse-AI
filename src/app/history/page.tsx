@@ -4,6 +4,7 @@ import { readSessionId } from "@/lib/session";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Reveal } from "@/components/Reveal";
+import { LightboxImage } from "@/components/ui/LightboxImage";
 import type { SkinConcernResult } from "@/lib/youcam/types";
 
 export default async function HistoryPage() {
@@ -73,11 +74,10 @@ export default async function HistoryPage() {
           {tryOnResults.map((result, i) => (
             <Reveal key={result.id} delay={i * 60}>
               <Card className="overflow-hidden p-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <LightboxImage
                   src={result.resultUrl}
                   alt={result.product.name}
-                  className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)] object-cover"
+                  className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
                 />
                 <p className="text-sm font-medium">{result.product.name}</p>
                 <p className="text-xs text-muted-foreground">
