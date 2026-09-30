@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Camera, Sparkles, Heart, ScanFace, Shirt, History } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card } from "@/components/ui/Card";
+import { ScoreRing } from "@/components/ui/ScoreRing";
 import { Logo } from "@/components/Logo";
 import { PulseWave } from "@/components/PulseWave";
 
@@ -20,29 +21,6 @@ const STEPS = [
     icon: Heart,
     title: "Get matched",
     body: "See your top concerns and the products that target them, or see yourself in the outfit.",
-  },
-];
-
-const CAPABILITIES = [
-  {
-    icon: ScanFace,
-    title: "YouCam Skin AI",
-    body: "Dermatology-grade analysis from one selfie.",
-    points: [
-      "8 concerns scored: texture, pore, wrinkle, acne, redness, oiliness, moisture, radiance",
-      "Your 3 weakest scores surface as top concerns",
-      "Matched to skincare that actually targets them",
-    ],
-  },
-  {
-    icon: Shirt,
-    title: "YouCam Virtual Try-On",
-    body: "See the fit before you spend a dollar.",
-    points: [
-      "Real outfits rendered from YouCam's official Clothes VTO templates",
-      "Your photo, the garment, applied — not a mockup",
-      "Compare the original and the result side by side",
-    ],
   },
 ];
 
@@ -71,90 +49,157 @@ const FAQ = [
   },
 ];
 
+const SAMPLE_SCORES = [
+  { type: "moisture", score: 74 },
+  { type: "redness", score: 82 },
+  { type: "texture", score: 68 },
+];
+
+const OUTFIT_PHOTOS = [
+  "https://app-cdn.makeupar.com/cms/dde157f1-6585-44e2-93c1-621042286366/1773798871609/file.jpg",
+  "https://app-cdn.makeupar.com/cms/54c04fb6-8a4c-454d-a75c-93500589c9aa/1773801599373/file.jpg",
+];
+
+function AnalysisMockup() {
+  return (
+    <Card className="flex w-full max-w-sm flex-col gap-5 p-6">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-muted-foreground">Sample analysis</span>
+        <span className="pulse-gradient-bg pulse-ring h-2 w-2 rounded-full" />
+      </div>
+      <div className="flex justify-between">
+        {SAMPLE_SCORES.map((s) => (
+          <ScoreRing key={s.type} score={s.score} label={s.type} size={76} />
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Real output shape from YouCam Skin AI — scored live from your own selfie.
+      </p>
+    </Card>
+  );
+}
+
+function OutfitMockup() {
+  return (
+    <div className="relative mx-auto w-full max-w-sm">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={OUTFIT_PHOTOS[0]}
+        alt="Flowy Black Dress, a real YouCam Clothes VTO template"
+        className="h-80 w-56 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={OUTFIT_PHOTOS[1]}
+        alt="White Shirt & Jeans, a real YouCam Clothes VTO template"
+        className="absolute -bottom-8 -right-6 h-56 w-40 rotate-3 rounded-[var(--radius)] border-4 border-background object-cover shadow-[var(--shadow-soft)]"
+      />
+    </div>
+  );
+}
+
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-24 px-6 py-20">
-      <section className="flex flex-col items-center gap-6 text-center">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-28 px-6 py-16 sm:px-10">
+      <section className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="flex flex-col items-start gap-6">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-[var(--shadow-soft)]">
+            <span className="pulse-gradient-bg pulse-ring h-2 w-2 rounded-full" />
+            Built with the YouCam API
+          </span>
 
+          <h1 className="font-display text-5xl italic leading-tight sm:text-6xl">
+            Find your skin&apos;s <span className="pulse-gradient-text not-italic">pulse</span>
+          </h1>
 
-        <h1 className="font-display text-5xl italic leading-tight sm:text-6xl">
-          Find your skin&apos;s <span className="pulse-gradient-text not-italic">pulse</span>
-        </h1>
+          <PulseWave className="h-8 w-64 opacity-80" />
 
-        <PulseWave className="h-10 w-full max-w-xs opacity-80" />
+          <p className="max-w-lg text-lg text-muted-foreground">
+            Upload a selfie for a real AI skin analysis, get matched to skincare that actually
+            targets your concerns, and try on apparel before you buy — powered by YouCam Skin AI
+            and Virtual Try-On.
+          </p>
 
-        <p className="max-w-xl text-lg text-muted-foreground">
-          Upload a selfie for a real AI skin analysis, get matched to skincare that actually
-          targets your concerns, and try on apparel before you buy — powered by YouCam Skin AI
-          and Virtual Try-On.
-        </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Link href="/analyze" className={buttonVariants("primary", "lg")}>
+              Analyze my skin
+            </Link>
+            <Link href="/catalog" className={buttonVariants("outline", "lg")}>
+              Try on apparel
+            </Link>
+          </div>
 
-        <div className="grid w-full gap-4 pt-4 sm:grid-cols-2">
-          <Link
-            href="/analyze"
-            className="group flex flex-col items-start gap-3 rounded-[var(--radius)] border border-border bg-card p-6 text-left shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-accent-solid/40"
-          >
-            <span className="pulse-gradient-bg flex h-10 w-10 items-center justify-center rounded-full text-lg text-white">
-              ✦
-            </span>
-            <span className="font-display text-xl italic">Analyze my skin</span>
-            <span className="text-sm text-muted-foreground">
-              Eight concerns scored by YouCam Skin AI
-            </span>
-          </Link>
-
-          <Link
-            href="/catalog"
-            className="group flex flex-col items-start gap-3 rounded-[var(--radius)] border border-border bg-card p-6 text-left shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-accent-solid/40"
-          >
-            <span className="pulse-gradient-bg flex h-10 w-10 items-center justify-center rounded-full text-lg text-white">
-              ⟳
-            </span>
-            <span className="font-display text-xl italic">Try on apparel</span>
-            <span className="text-sm text-muted-foreground">
-              See it on you first, with YouCam Virtual Try-On
-            </span>
+          <Link href="/history" className={buttonVariants("ghost", "md")}>
+            View your history →
           </Link>
         </div>
 
-        <Link href="/history" className={buttonVariants("ghost", "md")}>
-          View your history →
-        </Link>
+        <div className="flex justify-center lg:justify-end">
+          <AnalysisMockup />
+        </div>
       </section>
 
-      <section className="flex flex-col gap-8">
-        <div className="text-center">
+      <section className="flex flex-col gap-16">
+        <div className="max-w-xl">
           <h2 className="font-display text-3xl italic">Two capabilities, one flow</h2>
           <p className="mt-2 text-muted-foreground">
             Not two disconnected demos — one selfie-driven shopping experience.
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {CAPABILITIES.map((cap) => (
-            <Card key={cap.title} className="flex flex-col gap-4 p-6">
-              <span className="pulse-gradient-bg flex h-10 w-10 items-center justify-center rounded-full text-white">
-                <cap.icon className="h-5 w-5" strokeWidth={2} />
-              </span>
-              <div>
-                <h3 className="font-display text-xl italic">{cap.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{cap.body}</p>
-              </div>
-              <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
-                {cap.points.map((point) => (
-                  <li key={point} className="flex gap-2">
-                    <span className="pulse-gradient-bg mt-2 h-1.5 w-1.5 shrink-0 rounded-full" />
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          ))}
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="flex flex-col items-start gap-4">
+            <span className="pulse-gradient-bg flex h-11 w-11 items-center justify-center rounded-full text-white">
+              <ScanFace className="h-5 w-5" strokeWidth={2} />
+            </span>
+            <h3 className="font-display text-2xl italic">YouCam Skin AI</h3>
+            <p className="text-muted-foreground">Dermatology-grade analysis from one selfie.</p>
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
+              {[
+                "8 concerns scored: texture, pore, wrinkle, acne, redness, oiliness, moisture, radiance",
+                "Your 3 weakest scores surface as top concerns",
+                "Matched to skincare that actually targets them",
+              ].map((point) => (
+                <li key={point} className="flex gap-2">
+                  <span className="pulse-gradient-bg mt-2 h-1.5 w-1.5 shrink-0 rounded-full" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex justify-center">
+            <AnalysisMockup />
+          </div>
+        </div>
+
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="order-2 flex justify-center lg:order-1">
+            <OutfitMockup />
+          </div>
+          <div className="order-1 flex flex-col items-start gap-4 lg:order-2">
+            <span className="pulse-gradient-bg flex h-11 w-11 items-center justify-center rounded-full text-white">
+              <Shirt className="h-5 w-5" strokeWidth={2} />
+            </span>
+            <h3 className="font-display text-2xl italic">YouCam Virtual Try-On</h3>
+            <p className="text-muted-foreground">See the fit before you spend a dollar.</p>
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
+              {[
+                "Real outfits rendered from YouCam's official Clothes VTO templates",
+                "Your photo, the garment, applied — not a mockup",
+                "Compare the original and the result side by side",
+              ].map((point) => (
+                <li key={point} className="flex gap-2">
+                  <span className="pulse-gradient-bg mt-2 h-1.5 w-1.5 shrink-0 rounded-full" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
       <section className="flex flex-col gap-8">
-        <div className="text-center">
+        <div className="max-w-xl">
           <h2 className="font-display text-3xl italic">How it works</h2>
           <p className="mt-2 text-muted-foreground">One photo in, real answers out.</p>
         </div>
@@ -188,12 +233,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-8">
-        <div className="text-center">
+      <section className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+        <div>
           <h2 className="font-display text-3xl italic">Questions</h2>
         </div>
 
-        <div className="mx-auto flex w-full max-w-2xl flex-col gap-3">
+        <div className="flex flex-col gap-3">
           {FAQ.map((item) => (
             <details
               key={item.q}
@@ -211,7 +256,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center gap-6 rounded-[var(--radius)] p-12 text-center pulse-gradient-bg text-white">
+      <section className="flex flex-col items-center gap-6 rounded-[var(--radius)] p-12 text-center pulse-gradient-bg text-white sm:p-16">
         <h2 className="font-display text-3xl italic sm:text-4xl">Ready to find your pulse?</h2>
         <p className="max-w-md text-white/90">
           One selfie is all it takes to get real skin analysis and try on your next outfit.
