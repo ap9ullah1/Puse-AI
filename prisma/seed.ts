@@ -7,16 +7,15 @@ import { PrismaClient } from "../src/generated/prisma/client";
 const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL ?? "file:./prisma/dev.db" });
 const prisma = new PrismaClient({ adapter });
 
-const DEMO_GARMENT_REF_IMAGE =
-  "https://plugins-media.makeupar.com/strapi/assets/clothes_reference_full_body_01_5a000d999f.png";
-
+// Skincare thumbnails render via <ProductThumb> (generated on-brand tiles) — no
+// real product photography available yet, so `image` is intentionally unused.
 const products = [
   {
     id: "barrier-repair-cream",
     kind: "skincare",
     name: "Barrier Repair Cream",
     price: 32,
-    image: "https://picsum.photos/seed/barrier-repair-cream/480/640",
+    image: "",
     concern: "texture",
   },
   {
@@ -24,7 +23,7 @@ const products = [
     kind: "skincare",
     name: "Pore-Refining Clay Mask",
     price: 24,
-    image: "https://picsum.photos/seed/pore-refining-clay-mask/480/640",
+    image: "",
     concern: "pore",
   },
   {
@@ -32,7 +31,7 @@ const products = [
     kind: "skincare",
     name: "Retinal Night Serum",
     price: 48,
-    image: "https://picsum.photos/seed/retinal-night-serum/480/640",
+    image: "",
     concern: "wrinkle",
   },
   {
@@ -40,7 +39,7 @@ const products = [
     kind: "skincare",
     name: "Clearing Salicylic Gel",
     price: 22,
-    image: "https://picsum.photos/seed/clearing-salicylic-gel/480/640",
+    image: "",
     concern: "acne",
   },
   {
@@ -48,7 +47,7 @@ const products = [
     kind: "skincare",
     name: "Calm & Soothe Serum",
     price: 29,
-    image: "https://picsum.photos/seed/calm-and-soothe-serum/480/640",
+    image: "",
     concern: "redness",
   },
   {
@@ -56,7 +55,7 @@ const products = [
     kind: "skincare",
     name: "Mattifying Toner",
     price: 19,
-    image: "https://picsum.photos/seed/mattifying-toner/480/640",
+    image: "",
     concern: "oiliness",
   },
   {
@@ -64,7 +63,7 @@ const products = [
     kind: "skincare",
     name: "Deep Hydration Gel",
     price: 27,
-    image: "https://picsum.photos/seed/deep-hydration-gel/480/640",
+    image: "",
     concern: "moisture",
   },
   {
@@ -72,48 +71,57 @@ const products = [
     kind: "skincare",
     name: "Vitamin C Brightening Drops",
     price: 34,
-    image: "https://picsum.photos/seed/vitamin-c-brightening-drops/480/640",
+    image: "",
     concern: "radiance",
   },
+  // Apparel: backed by YouCam's own predefined Clothes VTO templates
+  // (GET /s2s/v2.0/task/template/cloth), not custom reference images. Each
+  // product's `templateId` is a real, verified-working template id, and
+  // `image` is that template's official thumbnail — real, distinct product
+  // photography instead of a shared placeholder.
   {
-    id: "everyday-oxford-shirt",
+    id: "white-shirt-and-jeans",
     kind: "apparel",
-    name: "Everyday Oxford Shirt",
-    price: 58,
-    image: "https://picsum.photos/seed/everyday-oxford-shirt/480/640",
-    refImageUrl: DEMO_GARMENT_REF_IMAGE,
-    garmentCategory: "upper_body",
+    name: "White Shirt & Jeans",
+    price: 120,
+    image: "https://app-cdn.makeupar.com/cms/54c04fb6-8a4c-454d-a75c-93500589c9aa/1773801599373/file.jpg",
+    templateId: "white_shirt_jeans_masculine_2",
+    garmentCategory: "auto",
   },
   {
-    id: "tailored-wide-leg-trouser",
+    id: "denim-on-denim",
     kind: "apparel",
-    name: "Tailored Wide-Leg Trouser",
-    price: 74,
-    image: "https://picsum.photos/seed/tailored-wide-leg-trouser/480/640",
-    refImageUrl: DEMO_GARMENT_REF_IMAGE,
-    garmentCategory: "lower_body",
+    name: "Denim on Denim",
+    price: 135,
+    image: "https://app-cdn.makeupar.com/cms/6ac3f7ef-3a24-4cc6-a80f-23c26b82c2e3/1773801653289/file.jpg",
+    templateId: "denim_on_denim_masculine_2",
+    garmentCategory: "auto",
   },
   {
-    id: "studio-midi-dress",
+    id: "flowy-black-dress",
     kind: "apparel",
-    name: "Studio Midi Dress",
-    price: 89,
-    image: "https://picsum.photos/seed/studio-midi-dress/480/640",
-    refImageUrl: DEMO_GARMENT_REF_IMAGE,
-    garmentCategory: "full_body",
+    name: "Flowy Black Dress",
+    price: 98,
+    image: "https://app-cdn.makeupar.com/cms/dde157f1-6585-44e2-93c1-621042286366/1773798871609/file.jpg",
+    templateId: "flowy_black_dress_feminine",
+    garmentCategory: "auto",
   },
   {
-    id: "cropped-utility-jacket",
+    id: "classic-black-suit",
     kind: "apparel",
-    name: "Cropped Utility Jacket",
-    price: 96,
-    image: "https://picsum.photos/seed/cropped-utility-jacket/480/640",
-    refImageUrl: DEMO_GARMENT_REF_IMAGE,
-    garmentCategory: "outerwear",
+    name: "Classic Black Suit",
+    price: 249,
+    image: "https://app-cdn.makeupar.com/cms/527fcbdf-eb50-4408-bc02-b05d2a74f154/1773801683794/file.jpg",
+    templateId: "classic_black_suit_masculine_2",
+    garmentCategory: "auto",
   },
 ];
 
 async function main() {
+  const currentIds = products.map((p) => p.id);
+  await prisma.tryOnResult.deleteMany({ where: { productId: { notIn: currentIds } } });
+  await prisma.product.deleteMany({ where: { id: { notIn: currentIds } } });
+
   for (const product of products) {
     await prisma.product.upsert({
       where: { id: product.id },

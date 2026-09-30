@@ -20,6 +20,7 @@ Session identity is a random `httpOnly` cookie (`src/lib/session.ts`) set the fi
 
 - **AI Skin Analysis** (`/s2s/v2.0/task/skin-analysis`) — `src/lib/youcam/client.ts`
 - **AI Clothes Virtual Try-On v4** (`/s2s/v2.0/task/cloth-v4`) — `src/lib/youcam/client.ts`
+- **Clothes Templates** (`/s2s/v2.0/task/template/cloth`) — YouCam's own predefined outfit templates. Each apparel `Product` stores a real `templateId` from this endpoint (not a custom reference image), so its catalog photo is YouCam's official template thumbnail and its try-on render is guaranteed to match what's shown.
 - **File API** (`/s2s/v2.0/file`) — used by both, for uploading the user's photo
 
 All three are task-based: create a task, poll it, get a result URL. `src/lib/use-polled-task.ts` is the client-side polling hook shared by both flows. The poll route handlers (`src/app/api/skin-analysis/[taskId]`, `src/app/api/try-on/[taskId]`) persist the result to the database the moment YouCam reports `task_status: "success"`.
@@ -50,7 +51,7 @@ SQLite is a local file — fine for `npm run dev` and for a judge cloning the re
 
 ## Before recording the demo / submitting
 
-- `prisma/seed.ts` currently uses `picsum.photos` placeholder images for catalog thumbnails, and reuses a single Perfect Corp sample garment photo (`DEMO_GARMENT_REF_IMAGE`) as the VTO reference image for every apparel item. **Swap these for your own product photography**, then re-run `npm run db:seed`, before the deadline — the hackathon's submission ownership rule requires the submission to be your own original work, and distinct reference garments per item will also make the try-on results more convincing on video.
+- Apparel catalog photos are real: YouCam's own official Clothes VTO template thumbnails, one per product (`prisma/seed.ts`). Skincare catalog thumbnails are still generated on-brand gradient tiles (`ProductThumb`) — no real product photography sourced for those yet.
 - Full-body photo requirements for the Clothes VTO API (single person, forward-facing, shoulders to feet visible, no obstructions) are in the "File Specs & Errors" section of the [AI Clothes API reference](https://docs.perfectcorp.com/reference/ai_clothes).
 
 ## Project structure

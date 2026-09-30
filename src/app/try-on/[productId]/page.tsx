@@ -17,11 +17,20 @@ export default async function TryOnPage({
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-16">
-      <div>
-        <Link href="/catalog" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Back to catalog
-        </Link>
-        <h1 className="mt-3 font-display text-4xl italic">Try on: {product.name}</h1>
+      <div className="flex items-start gap-5">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={product.image}
+          alt={product.name}
+          className="h-28 w-24 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+        />
+        <div>
+          <Link href="/catalog" className="text-sm text-muted-foreground hover:text-foreground">
+            ← Back to catalog
+          </Link>
+          <h1 className="mt-2 font-display text-4xl italic">Try on: {product.name}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">${product.price}</p>
+        </div>
       </div>
       <TryOnFlow product={product} />
     </main>

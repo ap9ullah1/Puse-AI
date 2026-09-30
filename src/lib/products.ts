@@ -27,7 +27,8 @@ export type ApparelProduct = {
   name: string;
   price: number;
   image: string;
-  refImageUrl: string;
+  refImageUrl?: string;
+  templateId?: string;
   garmentCategory: GarmentCategory;
 };
 
@@ -39,8 +40,10 @@ export function isApparelProduct(product: Product): product is ApparelProduct {
 
 function toProduct(row: ProductRow): Product {
   if (row.kind === "apparel") {
-    if (!row.refImageUrl || !row.garmentCategory) {
-      throw new Error(`Apparel product "${row.id}" is missing refImageUrl or garmentCategory`);
+    if ((!row.refImageUrl && !row.templateId) || !row.garmentCategory) {
+      throw new Error(
+        `Apparel product "${row.id}" is missing refImageUrl/templateId or garmentCategory`
+      );
     }
     return {
       id: row.id,
@@ -48,7 +51,8 @@ function toProduct(row: ProductRow): Product {
       name: row.name,
       price: row.price,
       image: row.image,
-      refImageUrl: row.refImageUrl,
+      refImageUrl: row.refImageUrl ?? undefined,
+      templateId: row.templateId ?? undefined,
       garmentCategory: row.garmentCategory as GarmentCategory,
     };
   }

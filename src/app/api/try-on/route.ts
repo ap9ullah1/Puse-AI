@@ -18,8 +18,9 @@ export async function POST(request: Request) {
   try {
     const taskId = await createClothTryOnTask({
       srcFileId: fileId,
-      refImageUrl: product.refImageUrl,
       garmentCategory: product.garmentCategory,
+      refImageUrl: product.refImageUrl,
+      templateId: product.templateId,
     });
     return NextResponse.json({ taskId });
   } catch (err) {

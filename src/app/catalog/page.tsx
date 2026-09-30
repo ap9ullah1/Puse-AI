@@ -25,10 +25,11 @@ export default async function CatalogPage() {
           {apparel.map((product) => (
             <Link key={product.id} href={`/try-on/${product.id}`}>
               <Card className="overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
-                <ProductThumb
-                  id={product.id}
-                  kind="apparel"
-                  className="mb-2 h-40 w-full rounded-[calc(var(--radius)-0.4rem)]"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)] object-cover"
                 />
                 <p className="text-sm font-medium">{product.name}</p>
                 <p className="text-sm text-muted-foreground">${product.price}</p>

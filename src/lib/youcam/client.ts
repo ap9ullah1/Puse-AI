@@ -98,15 +98,18 @@ export type GarmentCategory = "auto" | "full_body" | "upper_body" | "lower_body"
 
 export async function createClothTryOnTask(params: {
   srcFileId: string;
-  refImageUrl: string;
   garmentCategory: GarmentCategory;
+  refImageUrl?: string;
+  templateId?: string;
 }): Promise<string> {
   const res = await youcamFetch<YouCamTaskCreateResponse>("/s2s/v2.0/task/cloth-v4", {
     method: "POST",
     body: JSON.stringify({
       src_file_id: params.srcFileId,
-      ref_file_url: params.refImageUrl,
       garment_category: params.garmentCategory,
+      ...(params.templateId
+        ? { template_id: params.templateId }
+        : { ref_file_url: params.refImageUrl }),
     }),
   });
 
