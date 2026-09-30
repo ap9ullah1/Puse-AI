@@ -12,11 +12,18 @@ export function Reveal({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  // Visible by default: safe if JS is slow, disabled, or fails. Only content
+  // that starts below the fold gets hidden-then-revealed on scroll.
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    const startsOffscreen = el.getBoundingClientRect().top > window.innerHeight;
+    if (!startsOffscreen) return;
+
+    setVisible(false);
 
     const observer = new IntersectionObserver(
       ([entry]) => {

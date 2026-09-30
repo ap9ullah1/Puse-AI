@@ -7,6 +7,7 @@ import { friendlyYouCamError } from "@/lib/youcam/errors";
 import { Card } from "@/components/ui/Card";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { ProductThumb } from "@/components/ui/ProductThumb";
+import { Reveal } from "@/components/Reveal";
 import type { SkincareProduct } from "@/lib/products";
 import type { SkinAnalysisPollResponse } from "@/lib/youcam/types";
 
@@ -69,16 +70,18 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
   return (
     <>
       {!previewUrl && (
-        <ImageUploader label="Upload a selfie" guidance={GUIDANCE} onUploaded={handleUploaded} />
+        <Reveal className="mx-auto w-full max-w-xl">
+          <ImageUploader label="Upload a selfie" guidance={GUIDANCE} onUploaded={handleUploaded} />
+        </Reveal>
       )}
 
       {previewUrl && (
-        <div className="flex flex-col gap-6 sm:flex-row">
+        <div className="flex flex-col gap-8 sm:flex-row">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={previewUrl}
             alt="Uploaded selfie"
-            className="h-64 w-64 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
+            className="h-72 w-72 shrink-0 rounded-[var(--radius)] object-cover shadow-[var(--shadow-soft)]"
           />
           <div className="flex-1">
             {(creating || status === "running") && (
@@ -116,9 +119,9 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
       )}
 
       {recommended.length > 0 && (
-        <div>
+        <Reveal>
           <h2 className="mb-4 font-display text-2xl italic">Recommended for you</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {recommended.map((product) => (
               <Card key={product.id} className="overflow-hidden p-3">
                 <ProductThumb
@@ -131,7 +134,7 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
               </Card>
             ))}
           </div>
-        </div>
+        </Reveal>
       )}
     </>
   );

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getApparelProductById } from "@/lib/products";
 import { TryOnFlow } from "./try-on-flow";
+import { Reveal } from "@/components/Reveal";
 
 export default async function TryOnPage({
   params,
@@ -16,8 +17,8 @@ export default async function TryOnPage({
   }
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-16">
-      <div className="flex items-start gap-5">
+    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-16 sm:px-10">
+      <Reveal className="flex items-start gap-5">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={product.image}
@@ -28,10 +29,10 @@ export default async function TryOnPage({
           <Link href="/catalog" className="text-sm text-muted-foreground hover:text-foreground">
             ← Back to catalog
           </Link>
-          <h1 className="mt-2 font-display text-4xl italic">Try on: {product.name}</h1>
+          <h1 className="mt-2 font-display text-4xl italic sm:text-5xl">Try on: {product.name}</h1>
           <p className="mt-1 text-sm text-muted-foreground">${product.price}</p>
         </div>
-      </div>
+      </Reveal>
       <TryOnFlow product={product} />
     </main>
   );

@@ -5,6 +5,7 @@ import { ImageUploader } from "@/components/ImageUploader";
 import { usePolledTask } from "@/lib/use-polled-task";
 import { friendlyYouCamError } from "@/lib/youcam/errors";
 import { Card } from "@/components/ui/Card";
+import { Reveal } from "@/components/Reveal";
 import type { ApparelProduct } from "@/lib/products";
 import type { ClothTryOnPollResponse } from "@/lib/youcam/types";
 
@@ -59,11 +60,13 @@ export function TryOnFlow({ product }: { product: ApparelProduct }) {
       </p>
 
       {!previewUrl && (
-        <ImageUploader label="Upload a full-body photo" guidance={GUIDANCE} onUploaded={handleUploaded} />
+        <Reveal className="mx-auto w-full max-w-xl">
+          <ImageUploader label="Upload a full-body photo" guidance={GUIDANCE} onUploaded={handleUploaded} />
+        </Reveal>
       )}
 
       {previewUrl && (
-        <div className="flex flex-col gap-6 sm:flex-row">
+        <div className="mx-auto flex w-full max-w-2xl flex-col justify-center gap-10 sm:flex-row">
           <div className="flex flex-col items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
