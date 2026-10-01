@@ -10,18 +10,23 @@ import { Reveal } from "@/components/Reveal";
 const STEPS = [
   {
     icon: Camera,
-    title: "Upload a photo",
-    body: "A selfie for skin analysis, or a full-body shot to try on apparel.",
+    title: "Diagnose",
+    body: "Upload a selfie — YouCam Skin AI scores eight real skin concerns.",
   },
   {
     icon: Sparkles,
-    title: "YouCam AI does its thing",
-    body: "Real dermatology-grade skin scoring, or a generative outfit render — in seconds.",
+    title: "Match",
+    body: "Get skincare matched to your weakest scores — not a generic bestseller list.",
+  },
+  {
+    icon: Shirt,
+    title: "Try on",
+    body: "Upload a full-body shot and see apparel on you with YouCam Clothes VTO.",
   },
   {
     icon: Heart,
-    title: "Get matched",
-    body: "See your top concerns and the products that target them, or see yourself in the outfit.",
+    title: "Buy",
+    body: "Add Skin AI matches and try-on looks to one bag, then demo-checkout.",
   },
 ];
 
@@ -46,7 +51,7 @@ const FAQ = [
   },
   {
     q: "Do I need an account?",
-    a: "No. Everything is tracked to an anonymous session automatically. Revisit your past results anytime on the History page.",
+    a: "No — you can shop as a guest. Create an account to keep Skin AI and try-on results across devices.",
   },
 ];
 
@@ -119,15 +124,15 @@ export default function Home() {
 
           <div className="flex flex-wrap gap-3 pt-2">
             <Link href="/analyze" className={buttonVariants("primary", "lg")}>
-              Analyze my skin
+              Diagnose my skin
             </Link>
             <Link href="/catalog" className={buttonVariants("outline", "lg")}>
-              Try on apparel
+              Shop & try on
             </Link>
           </div>
 
-          <Link href="/history" className={buttonVariants("ghost", "md")}>
-            View your history →
+          <Link href="/bag" className={buttonVariants("ghost", "md")}>
+            View bag →
           </Link>
         </Reveal>
 
@@ -205,7 +210,7 @@ export default function Home() {
           <p className="mt-2 text-muted-foreground">One photo in, real answers out.</p>
         </Reveal>
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((step, i) => (
             <Reveal key={step.title} delay={i * 100}>
               <Card className="flex h-full flex-col gap-3 p-6 transition hover:-translate-y-1 hover:border-accent-solid/30">

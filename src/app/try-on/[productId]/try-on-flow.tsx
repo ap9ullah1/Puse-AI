@@ -7,7 +7,10 @@ import { friendlyYouCamError } from "@/lib/youcam/errors";
 import { Card } from "@/components/ui/Card";
 import { LightboxImage } from "@/components/ui/LightboxImage";
 import { SaveResultsBanner } from "@/components/SaveResultsBanner";
+import { AddToBagButton } from "@/components/AddToBagButton";
 import { Reveal } from "@/components/Reveal";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 import type { ApparelProduct } from "@/lib/products";
 import type { ClothTryOnPollResponse } from "@/lib/youcam/types";
 
@@ -107,7 +110,22 @@ export function TryOnFlow({ product }: { product: ApparelProduct }) {
                   className="h-80 w-60 rounded-[var(--radius)] shadow-[var(--shadow-soft)]"
                 />
                 <span className="text-xs text-muted-foreground">With {product.name}</span>
-                <div className="w-full max-w-md pt-4">
+                <div className="flex w-full max-w-xs flex-col gap-2 pt-2">
+                  <AddToBagButton
+                    productId={product.id}
+                    name={product.name}
+                    price={product.price}
+                    image={product.image}
+                    kind="apparel"
+                    tryOnUrl={data.results.url}
+                    label="Add look to bag"
+                    className="w-full"
+                  />
+                  <Link href="/bag" className={`${buttonVariants("outline", "md")} w-full`}>
+                    Checkout bag
+                  </Link>
+                </div>
+                <div className="w-full max-w-md pt-2">
                   <SaveResultsBanner kind="try-on" />
                 </div>
               </>

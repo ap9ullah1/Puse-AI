@@ -16,6 +16,7 @@ model User {
 
   skinResults  SkinAnalysisResult[]
   tryOnResults TryOnResult[]
+  orders       Order[]
 }
 
 model Product {
@@ -81,4 +82,20 @@ model VisitEvent {
   @@index([action])
   @@index([createdAt])
   @@index([country])
+}
+
+/// Demo checkout orders (hackathon ecommerce loop — no real payments)
+model Order {
+  id        String   @id @default(cuid())
+  sessionId String
+  userId    String?
+  items     String
+  total     Int
+  status    String   @default("demo_confirmed")
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+  @@index([userId])
 }

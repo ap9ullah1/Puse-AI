@@ -18,32 +18,45 @@ export default async function CatalogPage() {
           ← Back
         </Link>
         <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-          Catalog
+          Shop
         </h1>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Apparel you can try on with YouCam VTO, and skincare matched from Skin AI — add either to
+          your bag and checkout.
+        </p>
       </Reveal>
 
       <section>
         <Reveal>
           <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight">
-            Apparel — try it on
+            Apparel — try on, then buy
           </h2>
         </Reveal>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {apparel.map((product, i) => (
             <Reveal key={product.id} delay={i * 60}>
               <Card className="overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
-                <ProductImage
-                  id={product.id}
-                  kind="apparel"
-                  name={product.name}
-                  image={product.image}
-                  className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
-                />
-                <Link href={`/try-on/${product.id}`} className="block hover:text-accent-solid">
+                <Link href={`/shop/${product.id}`}>
+                  <ProductImage
+                    id={product.id}
+                    kind="apparel"
+                    name={product.name}
+                    image={product.image}
+                    className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
+                  />
+                </Link>
+                <Link href={`/shop/${product.id}`} className="block hover:text-accent-solid">
                   <p className="text-sm font-medium">{product.name}</p>
                   <p className="text-sm text-muted-foreground">${product.price}</p>
-                  <p className="mt-1 text-xs font-medium text-accent-solid">Try on →</p>
                 </Link>
+                <div className="mt-2 flex flex-col gap-1 text-xs font-medium">
+                  <Link href={`/try-on/${product.id}`} className="text-accent-solid hover:underline">
+                    Virtual try-on →
+                  </Link>
+                  <Link href={`/shop/${product.id}`} className="text-muted-foreground hover:text-accent-solid">
+                    Product page
+                  </Link>
+                </div>
               </Card>
             </Reveal>
           ))}
@@ -57,17 +70,24 @@ export default async function CatalogPage() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {skincare.map((product, i) => (
             <Reveal key={product.id} delay={i * 60}>
-              <Card className="overflow-hidden p-3">
-                <ProductImage
-                  id={product.id}
-                  kind="skincare"
-                  name={product.name}
-                  image={product.image}
-                  className="mb-2 h-40 w-full rounded-[calc(var(--radius)-0.4rem)]"
-                />
-                <p className="text-sm font-medium">{product.name}</p>
-                <p className="text-sm text-muted-foreground">${product.price}</p>
-              </Card>
+              <Link href={`/shop/${product.id}`}>
+                <Card className="overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
+                  <ProductImage
+                    id={product.id}
+                    kind="skincare"
+                    name={product.name}
+                    image={product.image}
+                    className="mb-2 h-40 w-full rounded-[calc(var(--radius)-0.4rem)]"
+                  />
+                  <p className="text-sm font-medium">{product.name}</p>
+                  <p className="text-sm text-muted-foreground">${product.price}</p>
+                  {"concern" in product && (
+                    <p className="mt-1 text-xs capitalize text-accent-solid">
+                      Targets {product.concern}
+                    </p>
+                  )}
+                </Card>
+              </Link>
             </Reveal>
           ))}
         </div>

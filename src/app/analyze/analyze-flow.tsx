@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ImageUploader } from "@/components/ImageUploader";
 import { usePolledTask } from "@/lib/use-polled-task";
@@ -9,7 +10,9 @@ import { ScoreRing } from "@/components/ui/ScoreRing";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { LightboxImage } from "@/components/ui/LightboxImage";
 import { SaveResultsBanner } from "@/components/SaveResultsBanner";
+import { AddToBagButton } from "@/components/AddToBagButton";
 import { Reveal } from "@/components/Reveal";
+import { buttonVariants } from "@/components/ui/button-variants";
 import type { SkincareProduct } from "@/lib/products";
 import type { SkinAnalysisPollResponse } from "@/lib/youcam/types";
 
@@ -78,7 +81,7 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
   const taskErrorMessage =
     status === "error" ? friendlyYouCamError(data?.error, data?.error_message ?? data?.error) : null;
 
-  const showResults = status === "success" && topConcerns.length > 0;
+  const showResults = status === "success" && sortedConcerns.length > 0;
 
   return (
     <>
@@ -116,7 +119,7 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
               </Card>
             )}
 
-            {status === "success" && !topConcerns.length && (
+            {status === "success" && !sortedConcerns.length && (
               <Card className="flex flex-col gap-3 border-amber-500/30 p-5">
                 <p className="text-sm text-amber-400">
                   Analysis finished but no scores came back. Try another clear selfie.
@@ -135,9 +138,11 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
               <div className="flex flex-col gap-5">
                 <div>
                   <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-accent-solid">
-                    Weakest scores
+                    Priority concerns
                   </p>
-                  <h2 className="font-display text-2xl font-semibold tracking-tight">Top concerns</h2>
+                  <h2 className="font-display text-2xl font-semibold tracking-tight">
+                    Weakest scores
+                  </h2>
                 </div>
                 <div className="flex flex-wrap gap-6 rounded-[var(--radius)] border border-border bg-card/60 p-6">
                   {topConcerns.map((concern) => (
@@ -155,19 +160,45 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
         </div>
       )}
 
+      {showResults && (
+        <Reveal>
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-accent-solid">
+            Full diagnostic
+          </p>
+          <h2 className="mb-4 font-display text-2xl font-semibold tracking-tight">
+            All {sortedConcerns.length} Skin AI scores
+          </h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {sortedConcerns.map((concern) => (
+              <Card key={concern.type} className="p-4">
+                <p className="text-xs capitalize text-muted-foreground">
+                  {concern.type.replace(/_/g, " ")}
+                </p>
+                <p className="mt-1 font-display text-2xl font-semibold text-accent-solid">
+                  {Math.round(concern.ui_score)}
+                </p>
+              </Card>
+            ))}
+          </div>
+        </Reveal>
+      )}
+
       {recommended.length > 0 && (
         <Reveal>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-accent-solid">
             Matched for you
           </p>
-          <h2 className="mb-4 font-display text-2xl font-semibold tracking-tight">
+          <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight">
             Recommended products
           </h2>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Add matches to your bag — same shop path as Novagate-style diagnose → buy.
+          </p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {recommended.map((product) => (
               <Card
                 key={product.id}
-                className="overflow-hidden p-3 transition hover:border-accent-solid/40 hover:shadow-[0_0_24px_-12px_var(--accent-solid)]"
+                className="flex flex-col overflow-hidden p-3 transition hover:border-accent-solid/40 hover:shadow-[0_0_24px_-12px_var(--accent-solid)]"
               >
                 <ProductImage
                   id={product.id}
@@ -178,8 +209,32 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
                 />
                 <p className="text-sm font-medium">{product.name}</p>
                 <p className="text-sm text-muted-foreground">${product.price}</p>
+                <p className="mb-3 text-xs capitalize text-muted-foreground">
+                  For {product.concern}
+                </p>
+                <div className="mt-auto flex flex-col gap-2">
+                  <AddToBagButton
+                    productId={product.id}
+                    name={product.name}
+                    price={product.price}
+                    image={product.image}
+                    kind="skincare"
+                    className="w-full"
+                  />
+                  <Link
+                    href={`/shop/${product.id}`}
+                    className={`${buttonVariants("ghost", "md")} w-full`}
+                  >
+                    View product
+                  </Link>
+                </div>
               </Card>
             ))}
+          </div>
+          <div className="mt-6">
+            <Link href="/bag" className={buttonVariants("outline", "md")}>
+              Go to bag →
+            </Link>
           </div>
         </Reveal>
       )}
