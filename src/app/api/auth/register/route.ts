@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import {
   authCookieOptions,
-  claimSessionResults,
   hashPassword,
   isValidEmail,
   normalizeEmail,
@@ -55,12 +54,11 @@ export async function POST(request: Request) {
     select: { id: true, email: true, name: true },
   });
 
-  const claimed = await claimSessionResults(user.id);
-
+  // New accounts start empty — guest browser history is imported only via explicit claim.
   const res = NextResponse.json({
     ok: true,
     user,
-    claimed,
+    claimed: 0,
   });
   res.cookies.set(USER_AUTH_COOKIE, signUserToken(user.id), authCookieOptions());
   return res;

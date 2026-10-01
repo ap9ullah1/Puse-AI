@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import {
   authCookieOptions,
-  claimSessionResults,
   isValidEmail,
   normalizeEmail,
   signUserToken,
@@ -37,12 +36,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
   }
 
-  const claimed = await claimSessionResults(user.id);
-
+  // Don't auto-merge guest history — History page offers an explicit Import button.
   const res = NextResponse.json({
     ok: true,
     user: { id: user.id, email: user.email, name: user.name },
-    claimed,
+    claimed: 0,
   });
   res.cookies.set(USER_AUTH_COOKIE, signUserToken(user.id), authCookieOptions());
   return res;

@@ -8,6 +8,7 @@ import { useBag } from "@/lib/bag";
 const LINKS = [
   { href: "/analyze", label: "Skin AI" },
   { href: "/catalog", label: "Shop" },
+  { href: "/bag", label: "Bag" },
   { href: "/history", label: "History" },
 ];
 
@@ -32,7 +33,10 @@ export function NavClient({
               pathname === link.href ||
               pathname.startsWith(`${link.href}/`) ||
               (link.href === "/catalog" &&
-                (pathname.startsWith("/shop") || pathname.startsWith("/try-on")));
+                (pathname.startsWith("/shop") || pathname.startsWith("/try-on"))) ||
+              (link.href === "/bag" && pathname.startsWith("/checkout"));
+            const label =
+              link.href === "/bag" && ready && count > 0 ? `Bag (${count})` : link.label;
             return (
               <Link
                 key={link.href}
@@ -43,20 +47,10 @@ export function NavClient({
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
-                {link.label}
+                {label}
               </Link>
             );
           })}
-          <Link
-            href="/bag"
-            className={`rounded-full px-3 py-2 text-sm font-medium transition sm:px-4 ${
-              pathname.startsWith("/bag") || pathname.startsWith("/checkout")
-                ? "text-accent-solid shadow-[inset_0_-2px_0_0_var(--accent-solid)]"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            }`}
-          >
-            Bag{ready && count > 0 ? ` (${count})` : ""}
-          </Link>
           <Link
             href="/account"
             className={`ml-1 rounded-full px-3 py-2 text-sm font-medium transition sm:px-4 ${

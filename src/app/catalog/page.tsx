@@ -25,7 +25,8 @@ export default async function CatalogPage() {
         </h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">
           Skincare from YouCam Skin AI matches and apparel you can try on with Clothes VTO — then
-          one bag. Ask the floating shop agent if you want a guided pick.
+          one bag and demo checkout. This <span className="text-foreground">is</span> the ecommerce
+          store (same site as Skin AI). Ask the floating shop agent for a guided pick.
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
           <a href="#featured" className={buttonVariants("outline", "md")}>
@@ -37,6 +38,9 @@ export default async function CatalogPage() {
           <a href="#skincare" className={buttonVariants("outline", "md")}>
             Skincare
           </a>
+          <Link href="/bag" className={buttonVariants("outline", "md")}>
+            Open bag
+          </Link>
           <Link href="/analyze" className={buttonVariants("primary", "md")}>
             Run Skin AI first
           </Link>
