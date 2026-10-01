@@ -2,7 +2,7 @@
 
 A submission for the [YouCam API Skin AI & eCommerce VTO Hackathon](https://devpost.com/submit-to/31400-youcam-api-skin-ai-ecommerce-vto-hackathon). This is a standalone project, independent of any other repository in this workspace, with its own license (MIT, see `LICENSE`).
 
-Upload a selfie and get a real YouCam Skin AI analysis, matched to skincare products that address your actual top concerns. Upload a full-body photo and try on apparel with YouCam's Clothes Virtual Try-On before you buy. Every result is saved to your session and viewable on `/history`. Both hackathon tracks in one flow.
+Upload a selfie and get a real YouCam Skin AI analysis, matched to skincare products that address your actual top concerns. Upload a full-body photo and try on apparel with YouCam's Clothes Virtual Try-On before you buy. Add matches and try-on looks to one bag, demo-checkout, and use the floating **shop agent** to chain Skin AI scores to SKUs. Results save to session or your account (`/history`). Both hackathon tracks in one Puse-designed shop flow.
 
 ## Stack
 

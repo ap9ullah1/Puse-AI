@@ -3,6 +3,7 @@ import { Geist_Mono, Montserrat, Oxanium } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { Tracker } from "@/components/Tracker";
 import { BagProvider } from "@/lib/bag";
+import { FloatingShopAgent } from "@/components/FloatingShopAgent";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Tracker />
           <Nav />
           {children}
+          <FloatingShopAgent />
         </BagProvider>
       </body>
     </html>

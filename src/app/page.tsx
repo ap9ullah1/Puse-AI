@@ -141,6 +141,70 @@ export default function Home() {
         </Reveal>
       </section>
 
+      <section className="flex flex-col gap-8">
+        <Reveal className="max-w-xl">
+          <p className="suite-tag">Shop</p>
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight">
+            Explore the store
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            Skin AI, apparel VTO, and checkout — one Puse experience (not a bolted-on template).
+          </p>
+        </Reveal>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              href: "/analyze",
+              title: "Skin AI",
+              body: "YouCam diagnostic · 8 scores",
+              image: "/images/skincare/vitamin-c-brightening-drops.jpg",
+            },
+            {
+              href: "/catalog#skincare",
+              title: "Skincare",
+              body: "Matched to your concerns",
+              image: "/images/skincare/barrier-repair-cream.jpg",
+            },
+            {
+              href: "/catalog#apparel",
+              title: "Apparel VTO",
+              body: "Try on before you buy",
+              image: OUTFIT_PHOTOS[0],
+            },
+            {
+              href: "/bag",
+              title: "Your bag",
+              body: "Skin matches + try-on looks",
+              image: "/images/skincare/retinal-night-serum.jpg",
+            },
+          ].map((cat, i) => (
+            <Reveal key={cat.href} delay={i * 60}>
+              <Link href={cat.href} className="group block">
+                <Card className="overflow-hidden p-0 transition hover:-translate-y-1 hover:border-accent-solid/40">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={cat.image}
+                    alt=""
+                    className="h-36 w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                  />
+                  <div className="p-4">
+                    <p className="font-display text-lg font-semibold">{cat.title}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{cat.body}</p>
+                  </div>
+                </Card>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal>
+          <p className="text-sm text-muted-foreground">
+            Need a hand? Open the{" "}
+            <span className="text-accent-solid">shop agent</span> (chat bubble) — it chains Skin AI
+            scores to SKUs and starts try-ons.
+          </p>
+        </Reveal>
+      </section>
+
       <section className="flex flex-col gap-16">
         <Reveal className="max-w-xl">
           <h2 className="font-display text-3xl font-semibold tracking-tight">
