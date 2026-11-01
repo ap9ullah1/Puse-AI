@@ -22,12 +22,16 @@ model User {
 model Product {
   id              String  @id
   kind            String
+  category        String  @default("general")
   name            String
+  description     String  @default("")
   price           Int
   image           String
   concern         String?
   refImageUrl     String?
   garmentCategory String?
+  featured        Boolean @default(false)
+  stock           Int     @default(25)
 
   tryOnResults TryOnResult[]
 }
@@ -62,7 +66,6 @@ model TryOnResult {
   @@index([userId])
 }
 
-/// Visitor / activity events for the owner dashboard
 model VisitEvent {
   id        String   @id @default(cuid())
   sessionId String
@@ -84,15 +87,20 @@ model VisitEvent {
   @@index([country])
 }
 
-/// Demo checkout orders (hackathon ecommerce loop — no real payments)
 model Order {
-  id        String   @id @default(cuid())
-  sessionId String
-  userId    String?
-  items     String
-  total     Int
-  status    String   @default("demo_confirmed")
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  sessionId    String
+  userId       String?
+  email        String?
+  items        String
+  subtotal     Int      @default(0)
+  discount     Int      @default(0)
+  shippingCost Int      @default(0)
+  total        Int
+  couponCode   String?
+  shipping     String?
+  status       String   @default("demo_confirmed")
+  createdAt    DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 

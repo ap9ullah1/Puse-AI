@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import type { Product } from "@/lib/products";
-import { getAllProducts } from "@/lib/products";
+import { canTryOn, getAllProducts } from "@/lib/products";
 
 export type AgentAction = {
   label: string;
@@ -12,8 +12,9 @@ export type AgentProductCard = {
   name: string;
   price: number;
   image: string;
-  kind: "skincare" | "apparel";
+  kind: "skincare" | "apparel" | "accessory";
   concern?: string | null;
+  tryOn: boolean;
 };
 
 export type AgentReply = {
@@ -30,6 +31,7 @@ function toCard(p: Product): AgentProductCard {
     image: p.image,
     kind: p.kind,
     concern: "concern" in p ? p.concern : null,
+    tryOn: canTryOn(p),
   };
 }
 
@@ -46,7 +48,8 @@ export async function runShopAgent(input: {
   const message = input.message.trim().toLowerCase();
   const products = await getAllProducts();
   const skincare = products.filter((p) => p.kind === "skincare");
-  const apparel = products.filter((p) => p.kind === "apparel");
+  const apparel = products.filter((p) => p.kind === "apparel" || p.kind === "accessory");
+  const vtoReady = products.filter(canTryOn);
 
   const latestSkin = input.userId
     ? await prisma.skinAnalysisResult.findFirst({
@@ -80,7 +83,7 @@ export async function runShopAgent(input: {
   ) {
     return {
       reply:
-        "I’m the Puse shop agent. I can match skincare from your YouCam Skin AI scores, point you to Clothes VTO try-ons, and drop products in your bag. Try: “match my skin”, “try on a dress”, or “show apparel”.",
+        "I’m the Puse AI shop agent. I can match skincare from your YouCam Skin AI scores, point you to Clothes VTO try-ons, and drop products in your bag. Try: “match my skin”, “try on a dress”, or “show apparel”.",
       products: [],
       actions: [
         { label: "Run Skin AI", href: "/analyze" },
@@ -165,39 +168,41 @@ export async function runShopAgent(input: {
       "wear",
     ])
   ) {
-    let picks = apparel;
+    let picks = vtoReady.length > 0 ? vtoReady : apparel;
     if (includesAny(message, ["dress"])) {
-      picks = apparel.filter((p) => p.name.toLowerCase().includes("dress"));
+      picks = picks.filter((p) => p.name.toLowerCase().includes("dress"));
     } else if (includesAny(message, ["suit"])) {
-      picks = apparel.filter((p) => p.name.toLowerCase().includes("suit"));
+      picks = picks.filter((p) => p.name.toLowerCase().includes("suit"));
     } else if (includesAny(message, ["jean", "denim"])) {
-      picks = apparel.filter((p) => /jean|denim/i.test(p.name));
+      picks = picks.filter((p) => /jean|denim/i.test(p.name));
     } else if (includesAny(message, ["shirt"])) {
-      picks = apparel.filter((p) => p.name.toLowerCase().includes("shirt"));
+      picks = picks.filter((p) => p.name.toLowerCase().includes("shirt"));
     }
-    if (picks.length === 0) picks = apparel;
+    if (picks.length === 0) picks = vtoReady.length > 0 ? vtoReady : apparel;
+    const firstTryOn = picks.find(canTryOn) ?? vtoReady[0];
     return {
       reply:
-        "Apparel uses YouCam Clothes Virtual Try-On (cloth-v4). Pick a look, upload a full-body photo, then add the rendered look to your bag.",
+        "Apparel uses YouCam Clothes Virtual Try-On (cloth-v4). Pick a VTO-ready look, upload a full-body photo, then add the rendered look to your bag and checkout.",
       products: picks.slice(0, 4).map(toCard),
       actions: [
         { label: "Open shop", href: "/catalog" },
-        {
-          label: "Try first item",
-          href: `/try-on/${picks[0]?.id ?? apparel[0]?.id}`,
-        },
+        ...(firstTryOn
+          ? [{ label: "Try first item", href: `/try-on/${firstTryOn.id}` }]
+          : [{ label: "Browse catalog", href: "/catalog" }]),
       ],
     };
   }
 
   // Bag / checkout
-  if (includesAny(message, ["bag", "cart", "checkout", "buy", "purchase", "order"])) {
+  if (includesAny(message, ["bag", "cart", "checkout", "buy", "purchase", "order", "coupon"])) {
     return {
       reply:
-        "Your bag holds Skin AI matches and VTO looks together — then demo checkout closes the ecommerce loop (no real charge).",
+        "Your bag holds Skin AI matches and try-on looks together. Apply PUSE10, SKINAI, or TRYON, pick standard or express shipping, and place the order. It shows up under Orders.",
       products: [],
       actions: [
         { label: "Open bag", href: "/bag" },
+        { label: "Checkout", href: "/checkout" },
+        { label: "Orders", href: "/orders" },
         { label: "Keep shopping", href: "/catalog" },
       ],
     };

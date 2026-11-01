@@ -90,8 +90,9 @@ export function LightboxImage({
           e.stopPropagation();
           setOpen(true);
         }}
-        className={`group relative block cursor-zoom-in overflow-hidden p-0 text-left ${className.includes("w-full") ? "w-full" : ""}`}
-        aria-label={`Open ${alt}`}
+        onPointerDown={(e) => e.stopPropagation()}
+        className={`group relative block cursor-zoom-in overflow-hidden p-0 text-left ${className}`}
+        aria-label={`Zoom ${alt}`}
       >
         {children ?? (
           // eslint-disable-next-line @next/next/no-img-element

@@ -1,11 +1,11 @@
 import { Shirt, Sparkles } from "lucide-react";
 
 const GRADIENTS: [string, string][] = [
-  ["#04524a", "#1de4d0"],
-  ["#0f3a33", "#62b5d1"],
-  ["#1de4d0", "#62b5d1"],
-  ["#04524a", "#62b5d1"],
-  ["#0d1e1e", "#1de4d0"],
+  ["#6d28d9", "#ec4899"],
+  ["#7c3aed", "#f472b6"],
+  ["#a855f7", "#fb7185"],
+  ["#4c1d95", "#e879f9"],
+  ["#c026d3", "#f9a8d4"],
 ];
 
 function pickGradient(id: string): [string, string] {
@@ -20,18 +20,18 @@ export function ProductThumb({
   className = "",
 }: {
   id: string;
-  kind: "skincare" | "apparel";
+  kind: "skincare" | "apparel" | "accessory";
   className?: string;
 }) {
   const [from, to] = pickGradient(id);
-  const Icon = kind === "apparel" ? Shirt : Sparkles;
+  const Icon = kind === "skincare" ? Sparkles : Shirt;
 
   return (
     <div
       className={`flex items-center justify-center ${className}`}
       style={{ backgroundImage: `linear-gradient(135deg, ${from}, ${to})` }}
     >
-      <Icon className="h-8 w-8 text-[#000d0d]/90" strokeWidth={1.5} />
+      <Icon className="h-8 w-8 text-white" strokeWidth={1.5} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Check, Upload } from "lucide-react";
 import { Card } from "./ui/Card";
 
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/jpg", "image/png"]);
@@ -93,7 +94,7 @@ export function ImageUploader({ label, guidance, onUploaded, disabled }: ImageUp
       <ul className="flex flex-col gap-1.5 text-sm text-muted-foreground">
         {guidance.map((tip) => (
           <li key={tip} className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent-solid" />
+            <Check className="h-3.5 w-3.5 shrink-0 text-accent-solid" />
             {tip}
           </li>
         ))}
@@ -117,12 +118,19 @@ export function ImageUploader({ label, guidance, onUploaded, disabled }: ImageUp
         onClick={() => inputRef.current?.click()}
         className="nova-ring-btn inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition disabled:opacity-50"
       >
-        {status === "uploading" ? "Uploading…" : label}
+        {status === "uploading" ? (
+          "Uploading…"
+        ) : (
+          <>
+            <Upload className="h-4 w-4" />
+            {label}
+          </>
+        )}
       </button>
 
       <p className="text-xs text-muted-foreground">or drag and drop a JPEG/PNG photo here</p>
 
-      {status === "error" && <p className="max-w-sm text-sm text-amber-400">{errorMessage}</p>}
+      {status === "error" && <p className="max-w-sm text-sm text-amber-700">{errorMessage}</p>}
     </Card>
   );
 }

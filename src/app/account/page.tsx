@@ -47,6 +47,18 @@ export default async function AccountPage({
               >
                 View saved results
               </Link>
+              <Link
+                href="/orders"
+                className="nova-ring-btn rounded-full px-5 py-2.5 text-sm font-medium"
+              >
+                Orders
+              </Link>
+              <Link
+                href="/catalog"
+                className="nova-ring-btn rounded-full px-5 py-2.5 text-sm font-medium"
+              >
+                Shop
+              </Link>
               <LogoutButton />
             </div>
           </Card>

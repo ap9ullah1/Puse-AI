@@ -122,7 +122,7 @@ export function AccountForm({
           />
         </label>
 
-        {error && <p className="text-sm text-amber-400">{error}</p>}
+        {error && <p className="text-sm text-amber-700">{error}</p>}
         {info && <p className="text-sm text-accent-solid">{info}</p>}
 
         <button

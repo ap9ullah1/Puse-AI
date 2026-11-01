@@ -1,7 +1,7 @@
 function scoreColor(score: number): string {
-  if (score < 60) return "#f59e0b";
-  if (score < 80) return "#62b5d1";
-  return "#1de4d0";
+  if (score < 60) return "#d97706";
+  if (score < 80) return "#db2777";
+  return "#6d28d9";
 }
 
 export function ScoreRing({ score, label, size = 88 }: { score: number; label: string; size?: number }) {

@@ -13,11 +13,15 @@ type Settled<T> = { kind: "success" | "error"; data: T };
 export function usePolledTask<T extends TaskBody>(endpoint: string | null) {
   const [settled, setSettled] = useState<Settled<T> | null>(null);
 
-  useEffect(() => {
-    // Always clear prior result when the endpoint changes (or clears),
-    // so a new upload never shows the previous task's success/error.
+  // Reset during render (not in the effect below) so a new upload never
+  // shows the previous task's success/error, even for one frame.
+  const [prevEndpoint, setPrevEndpoint] = useState(endpoint);
+  if (prevEndpoint !== endpoint) {
+    setPrevEndpoint(endpoint);
     setSettled(null);
+  }
 
+  useEffect(() => {
     if (!endpoint) return;
 
     let cancelled = false;

@@ -33,7 +33,7 @@ export function ImportGuestResultsButton({ count }: { count: number }) {
       >
         {loading ? "Importing…" : `Import ${count} guest result${count === 1 ? "" : "s"}`}
       </button>
-      {error && <p className="text-xs text-amber-400">{error}</p>}
+      {error && <p className="text-xs text-amber-700">{error}</p>}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Tracker } from "@/components/Tracker";
 import { BagProvider } from "@/lib/bag";
 import { FloatingShopAgent } from "@/components/FloatingShopAgent";
+import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -24,9 +25,9 @@ const oxanium = Oxanium({
 });
 
 export const metadata: Metadata = {
-  title: "Puse",
+  title: "Puse AI",
   description:
-    "Read your skin's pulse, then shop for it. AI skin analysis and apparel virtual try-on, built with the YouCam API.",
+    "Puse AI — skin analysis and apparel virtual try-on in one shop, powered by the YouCam API.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -39,7 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <BagProvider>
           <Tracker />
           <Nav />
-          {children}
+          <div className="flex flex-1 flex-col">{children}</div>
+          <SiteFooter />
           <FloatingShopAgent />
         </BagProvider>
       </body>

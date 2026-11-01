@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Reveal } from "@/components/Reveal";
 import { LightboxImage } from "@/components/ui/LightboxImage";
 import { ImportGuestResultsButton } from "@/components/ImportGuestResultsButton";
+import { AddToBagButton } from "@/components/AddToBagButton";
 import { buttonVariants } from "@/components/ui/button-variants";
 import type { SkinConcernResult } from "@/lib/youcam/types";
 
@@ -71,9 +72,9 @@ export default async function HistoryPage({
   const visibleTotal = visibleSkin.length + visibleTryOn.length;
 
   const filters: { id: CaseFilter; label: string; count: number }[] = [
-    { id: "all", label: "All cases", count: skinResults.length + tryOnResults.length },
+    { id: "all", label: "All looks", count: skinResults.length + tryOnResults.length },
     { id: "skin", label: "Skin AI", count: skinResults.length },
-    { id: "try-on", label: "Try-ons", count: tryOnResults.length },
+    { id: "try-on", label: "Try-on looks", count: tryOnResults.length },
   ];
 
   return (
@@ -83,12 +84,12 @@ export default async function HistoryPage({
           ← Back
         </Link>
         <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-          {user ? "Your saved results" : "Your history"}
+          Your looks
         </h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">
           {user
-            ? `Signed in as ${user.email}. Only results generated on this account are listed here.`
-            : "Guest mode — only this browser’s unsaved results. Create an account so new scans and try-ons stay with you."}
+            ? `Signed in as ${user.email}. Skin AI scores and try-on photos from your shopping experiences live here — add a look to your bag anytime.`
+            : "Guest mode — try-on photos and Skin AI results from this browser. Create an account so every shopping experience stays with you."}
         </p>
         {!user && (
           <div className="mt-4 flex flex-wrap gap-3">
@@ -144,10 +145,10 @@ export default async function HistoryPage({
             <div className="flex flex-col items-start gap-4 py-6">
               <p className="text-sm text-muted-foreground">
                 {filter === "skin"
-                  ? "No Skin AI cases on this account yet."
+                  ? "No Skin AI experiences yet."
                   : filter === "try-on"
-                    ? "No try-on cases on this account yet."
-                    : "Nothing saved on this account yet."}
+                    ? "No try-on looks yet — try a garment, then it shows up here."
+                    : "No shopping experiences saved yet."}
               </p>
               <div className="flex flex-wrap gap-3">
                 {(filter === "all" || filter === "skin") && (
@@ -212,28 +213,53 @@ export default async function HistoryPage({
               {showTryOn && visibleTryOn.length > 0 && (
                 <section>
                   <h2 className="mb-4 font-display text-xl font-semibold tracking-tight">
-                    Try-ons
+                    Try-on looks
                   </h2>
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                    {visibleTryOn.map((result) => (
-                      <div
-                        key={result.id}
-                        className="overflow-hidden rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background/40 p-3"
-                      >
-                        <LightboxImage
-                          src={result.resultUrl}
-                          alt={result.product.name}
-                          className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
-                        />
-                        <div className="mb-1">
-                          <Badge>Try-on</Badge>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {visibleTryOn.map((result) => {
+                      const kind = result.product.kind as "skincare" | "apparel" | "accessory";
+                      return (
+                        <div
+                          key={result.id}
+                          className="flex flex-col overflow-hidden rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background/40 p-3"
+                        >
+                          <LightboxImage
+                            src={result.resultUrl}
+                            alt={`${result.product.name} try-on look`}
+                            className="mb-3 h-64 w-full rounded-[calc(var(--radius)-0.4rem)]"
+                          />
+                          <div className="mb-1 flex items-center gap-2">
+                            <Badge>Your look</Badge>
+                            <p className="text-xs text-muted-foreground">
+                              {result.createdAt.toLocaleDateString()}
+                            </p>
+                          </div>
+                          <p className="font-medium">{result.product.name}</p>
+                          <p className="text-sm text-accent-solid">${result.product.price}</p>
+                          <div className="mt-3 flex flex-col gap-2">
+                            <AddToBagButton
+                              productId={result.product.id}
+                              name={result.product.name}
+                              price={result.product.price}
+                              image={result.product.image}
+                              kind={kind}
+                              category={result.product.category}
+                              vto
+                              tryOnUrl={result.resultUrl}
+                              stock={result.product.stock}
+                              label="Add look to bag"
+                              className="w-full"
+                            />
+                            <Link
+                              href={`/try-on/${result.product.id}`}
+                              className={`${buttonVariants("outline", "md")} w-full`}
+                            >
+                              Try again
+                            </Link>
+                          </div>
                         </div>
-                        <p className="text-sm font-medium">{result.product.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {result.createdAt.toLocaleString()}
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </section>
               )}
@@ -243,15 +269,11 @@ export default async function HistoryPage({
       </Card>
 
       <p className="text-center text-sm text-muted-foreground">
-        Ecommerce lives in the same app —{" "}
-        <Link href="/catalog" className="text-accent-solid hover:underline">
-          Shop
-        </Link>
-        ,{" "}
+        Looks feed the store — add one to your{" "}
         <Link href="/bag" className="text-accent-solid hover:underline">
-          Bag
+          bag
         </Link>
-        , and the chat bubble shop agent.
+        , then checkout. The try-on photo stays on the order.
       </p>
     </main>
   );

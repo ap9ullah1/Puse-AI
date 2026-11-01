@@ -11,8 +11,9 @@ type AgentProduct = {
   name: string;
   price: number;
   image: string;
-  kind: "skincare" | "apparel";
+  kind: "skincare" | "apparel" | "accessory";
   concern?: string | null;
+  tryOn?: boolean;
 };
 
 type AgentAction = { label: string; href: string };
@@ -35,7 +36,7 @@ export function FloatingShopAgent() {
     {
       id: "welcome",
       role: "agent",
-      text: "Shop with Puse — I chain YouCam Skin AI scores to products and guide Clothes VTO try-ons. Ask me anything.",
+      text: "Shop with Puse AI — I chain YouCam Skin AI scores to products and guide Clothes VTO try-ons. Ask me anything.",
       actions: [
         { label: "Skin AI", href: "/analyze" },
         { label: "Catalog", href: "/catalog" },
@@ -98,7 +99,7 @@ export function FloatingShopAgent() {
         <div className="flex h-[min(32rem,70vh)] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-[var(--radius)] border border-border bg-card/95 shadow-[var(--shadow-soft)] backdrop-blur-md">
           <header className="flex items-center justify-between border-b border-border px-4 py-3">
             <div>
-              <p className="font-display text-sm font-semibold tracking-tight">Puse shop agent</p>
+              <p className="font-display text-sm font-semibold tracking-tight">Puse AI shop agent</p>
               <p className="text-[11px] text-muted-foreground">Skin AI · VTO · bag</p>
             </div>
             <button
@@ -159,11 +160,11 @@ export function FloatingShopAgent() {
                               Add to bag
                             </button>
                             <Link
-                              href={p.kind === "apparel" ? `/try-on/${p.id}` : `/shop/${p.id}`}
+                              href={p.tryOn ? `/try-on/${p.id}` : `/shop/${p.id}`}
                               className="rounded-full border border-border px-2 py-0.5 text-[11px] hover:border-accent-solid/50 hover:text-accent-solid"
                               onClick={() => setOpen(false)}
                             >
-                              {p.kind === "apparel" ? "Try on" : "View"}
+                              {p.tryOn ? "Try on" : "View"}
                             </Link>
                           </div>
                         </div>

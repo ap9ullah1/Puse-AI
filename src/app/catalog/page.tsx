@@ -1,177 +1,167 @@
 import Link from "next/link";
-import { getAllProducts } from "@/lib/products";
-import { Card } from "@/components/ui/Card";
-import { ProductImage } from "@/components/ui/ProductImage";
+import { ScanFace, Shirt } from "lucide-react";
+import { getAllProducts, SHOP_CATEGORIES, canTryOn } from "@/lib/products";
+import { filterCatalog, type CatalogQuery } from "@/lib/catalog-query";
 import { Reveal } from "@/components/Reveal";
-import { AddToBagButton } from "@/components/AddToBagButton";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { Card } from "@/components/ui/Card";
+import { ProductCard } from "@/components/ProductCard";
+import { ShopToolbar } from "@/components/ShopToolbar";
 
 export const dynamic = "force-dynamic";
 
-export default async function CatalogPage() {
+export default async function CatalogPage({
+  searchParams,
+}: {
+  searchParams: Promise<CatalogQuery>;
+}) {
+  const query = await searchParams;
   const products = await getAllProducts();
-  const apparel = products.filter((p) => p.kind === "apparel");
-  const skincare = products.filter((p) => p.kind === "skincare");
-  const featured = [...skincare.slice(0, 2), ...apparel.slice(0, 2)];
+  const filtered = filterCatalog(products, query);
+  const browsing =
+    !(query.q ?? "").trim() && query.vto !== "1" && (!query.sort || query.sort === "featured");
+  const vtoReady = products.filter(canTryOn);
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 py-16 sm:px-10">
       <Reveal>
-        <Link href="/" className="text-sm text-muted-foreground hover:text-accent-solid">
-          ← Back
-        </Link>
+        <p className="suite-tag">Puse AI store</p>
         <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-          Shop
+          {query.vto === "1" ? "Virtual try-on" : "Shop the full look"}
         </h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          Skincare from YouCam Skin AI matches and apparel you can try on with Clothes VTO — then
-          one bag and demo checkout. This <span className="text-foreground">is</span> the ecommerce
-          store (same site as Skin AI). Ask the floating shop agent for a guided pick.
+          Skincare matched to your skin, apparel you can try on, and one checkout for both.
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
-          <a href="#featured" className={buttonVariants("outline", "md")}>
-            Featured
-          </a>
-          <a href="#apparel" className={buttonVariants("outline", "md")}>
-            Apparel VTO
-          </a>
-          <a href="#skincare" className={buttonVariants("outline", "md")}>
-            Skincare
-          </a>
-          <Link href="/bag" className={buttonVariants("outline", "md")}>
-            Open bag
-          </Link>
           <Link href="/analyze" className={buttonVariants("primary", "md")}>
-            Run Skin AI first
+            <ScanFace className="h-4 w-4" />
+            Skin AI match
+          </Link>
+          <Link href="/catalog?vto=1" className={buttonVariants("outline", "md")}>
+            <Shirt className="h-4 w-4" />
+            Try on
+          </Link>
+          <Link href="/bag" className={buttonVariants("ghost", "md")}>
+            View bag
           </Link>
         </div>
       </Reveal>
 
-      <section id="featured">
-        <Reveal>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-accent-solid">
-            Picked for the demo
-          </p>
-          <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight">Featured</h2>
+      {browsing && (
+        <Reveal delay={60}>
+          <div className="overflow-hidden rounded-[1.5rem] border border-border bg-white shadow-[var(--shadow-soft)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/Puse%20AI%20Beauty%20Shop%20Experience.png"
+              alt="Puse AI shop experience — Skin AI, skincare, apparel VTO, and checkout"
+              className="w-full"
+            />
+          </div>
         </Reveal>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {featured.map((product, i) => (
-            <Reveal key={product.id} delay={i * 50}>
-              <Card className="flex h-full flex-col overflow-hidden p-3 transition hover:border-accent-solid/40">
-                <Link href={`/shop/${product.id}`}>
-                  <ProductImage
-                    id={product.id}
-                    kind={product.kind}
-                    name={product.name}
-                    image={product.image}
-                    className="mb-2 h-44 w-full rounded-[calc(var(--radius)-0.4rem)]"
-                  />
-                  <p className="text-sm font-medium">{product.name}</p>
-                  <p className="text-sm text-muted-foreground">${product.price}</p>
+      )}
+
+      <ShopToolbar action="/catalog" q={query.q} sort={query.sort} vto={query.vto === "1"} />
+
+      {browsing && (
+        <section>
+          <Reveal>
+            <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight">Categories</h2>
+          </Reveal>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {SHOP_CATEGORIES.map((cat, i) => (
+              <Reveal key={cat.slug} delay={i * 40}>
+                <Link href={`/shop/category/${cat.slug}`} className="group block">
+                  <div className="relative h-44 overflow-hidden rounded-[var(--radius)] border border-border sm:h-56">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cat.image}
+                      alt={cat.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-4">
+                      <p className="font-display text-lg font-semibold">{cat.name}</p>
+                      <p className="text-xs text-muted-foreground">{cat.blurb}</p>
+                    </div>
+                  </div>
                 </Link>
-                <div className="mt-auto flex flex-col gap-2 pt-3">
-                  <AddToBagButton
-                    productId={product.id}
-                    name={product.name}
-                    price={product.price}
-                    image={product.image}
-                    kind={product.kind}
-                    className="w-full"
-                  />
-                  {product.kind === "apparel" && (
-                    <Link
-                      href={`/try-on/${product.id}`}
-                      className={`${buttonVariants("ghost", "md")} w-full`}
-                    >
-                      Virtual try-on
-                    </Link>
-                  )}
-                </div>
-              </Card>
-            </Reveal>
-          ))}
-        </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section>
+        <Reveal>
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-accent-solid">
+                {browsing ? "Featured" : "Results"}
+              </p>
+              <h2 className="font-display text-2xl font-semibold tracking-tight">
+                {browsing ? "Staff picks" : `${filtered.length} product${filtered.length === 1 ? "" : "s"}`}
+              </h2>
+            </div>
+            {browsing && (
+              <Link href="/shop/category/skincare" className="text-sm text-accent-solid hover:underline">
+                Browse skincare
+              </Link>
+            )}
+          </div>
+        </Reveal>
+        {filtered.length === 0 ? (
+          <Card className="p-6 text-sm text-muted-foreground">
+            Nothing matches that search.{" "}
+            <Link href="/catalog" className="text-accent-solid hover:underline">
+              Clear filters
+            </Link>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {(browsing ? filtered.filter((product) => product.featured).slice(0, 8) : filtered).map(
+              (product) => (
+                <ProductCard key={product.id} product={product} />
+              )
+            )}
+          </div>
+        )}
       </section>
 
-      <section id="apparel">
-        <Reveal>
-          <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight">
-            Apparel — try on, then buy
-          </h2>
-        </Reveal>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {apparel.map((product, i) => (
-            <Reveal key={product.id} delay={i * 60}>
-              <Card className="overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
-                <Link href={`/shop/${product.id}`}>
-                  <ProductImage
-                    id={product.id}
-                    kind="apparel"
-                    name={product.name}
-                    image={product.image}
-                    className="mb-2 h-56 w-full rounded-[calc(var(--radius)-0.4rem)]"
-                  />
-                </Link>
-                <Link href={`/shop/${product.id}`} className="block hover:text-accent-solid">
-                  <p className="text-sm font-medium">{product.name}</p>
-                  <p className="text-sm text-muted-foreground">${product.price}</p>
-                </Link>
-                <div className="mt-2 flex flex-col gap-1 text-xs font-medium">
-                  <Link href={`/try-on/${product.id}`} className="text-accent-solid hover:underline">
-                    Virtual try-on →
-                  </Link>
-                  <Link
-                    href={`/shop/${product.id}`}
-                    className="text-muted-foreground hover:text-accent-solid"
-                  >
-                    Product page
-                  </Link>
-                </div>
-              </Card>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      {browsing && (
+        <section>
+          <Reveal>
+            <h2 className="mb-2 flex items-center gap-2 font-display text-2xl font-semibold tracking-tight">
+              <Shirt className="h-5 w-5 text-accent-solid" />
+              Ready to try on
+            </h2>
+            <p className="mb-6 text-sm text-muted-foreground">
+              YouCam Clothes VTO renders the garment on your photo. Add the look to your bag when
+              it lands.
+            </p>
+          </Reveal>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {vtoReady.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      <section id="skincare">
-        <Reveal>
-          <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight">Skincare</h2>
-        </Reveal>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {skincare.map((product, i) => (
-            <Reveal key={product.id} delay={i * 60}>
-              <Card className="flex h-full flex-col overflow-hidden p-3 transition hover:-translate-y-0.5 hover:border-accent-solid/40">
-                <Link href={`/shop/${product.id}`}>
-                  <ProductImage
-                    id={product.id}
-                    kind="skincare"
-                    name={product.name}
-                    image={product.image}
-                    className="mb-2 h-40 w-full rounded-[calc(var(--radius)-0.4rem)]"
-                  />
-                  <p className="text-sm font-medium">{product.name}</p>
-                  <p className="text-sm text-muted-foreground">${product.price}</p>
-                  {"concern" in product && (
-                    <p className="mt-1 text-xs capitalize text-accent-solid">
-                      Targets {product.concern}
-                    </p>
-                  )}
-                </Link>
-                <div className="mt-auto pt-3">
-                  <AddToBagButton
-                    productId={product.id}
-                    name={product.name}
-                    price={product.price}
-                    image={product.image}
-                    kind="skincare"
-                    className="w-full"
-                  />
-                </div>
-              </Card>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      <Reveal>
+        <Card className="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-display text-lg font-semibold">Shopper codes</p>
+            <p className="text-sm text-muted-foreground">
+              <span className="text-accent-solid">PUSE10</span> ·{" "}
+              <span className="text-accent-solid">SKINAI</span> ·{" "}
+              <span className="text-accent-solid">TRYON</span>
+            </p>
+          </div>
+          <Link href="/bag" className={buttonVariants("primary", "md")}>
+            Go to bag
+          </Link>
+        </Card>
+      </Reveal>
     </main>
   );
 }

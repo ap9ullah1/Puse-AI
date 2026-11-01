@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
-/* Novagate Skin Hub palette — forced dark */
+/* Puse palette — lilac ground, violet-to-pink brand */
 :root {
-  --background: #000d0d;
-  --foreground: #fafafa;
-  --card: #0d1e1e;
-  --card-foreground: #fafafa;
-  --muted: #0a1818;
-  --muted-foreground: #94969c;
-  --border: #1a3333;
-  --accent-from: #04524a;
-  --accent-via: #1de4d0;
-  --accent-to: #62b5d1;
-  --accent-solid: #1de4d0;
-  --accent-solid-foreground: #000d0d;
+  --background: #f6f3fb;
+  --foreground: #1c1233;
+  --card: #ffffff;
+  --card-foreground: #1c1233;
+  --muted: #f3eef9;
+  --muted-foreground: #6e6580;
+  --border: #e6dff2;
+  --accent-from: #6d28d9;
+  --accent-via: #d946ef;
+  --accent-to: #f9a8d4;
+  --accent-solid: #6d28d9;
+  --accent-solid-foreground: #ffffff;
   --radius: 1rem;
-  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 13, 13, 0.7);
-  --title-band-from: #0f3a33;
-  --title-band-to: #04524a;
+  --shadow-soft: 0 1px 2px rgba(40, 16, 70, 0.06), 0 16px 40px -24px rgba(76, 29, 149, 0.35);
+  --title-band-from: #5b21b6;
+  --title-band-to: #db2777;
 }
 
 @theme inline {
@@ -39,35 +39,33 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(1100px 520px at 8% -8%, #efe6ff 0%, transparent 58%),
+    radial-gradient(900px 480px at 100% 0%, #fde7f4 0%, transparent 52%),
+    var(--background);
   color: var(--foreground);
 }
 
-.pulse-gradient-text {
+.puse-gradient-text {
   background-image: linear-gradient(100deg, var(--accent-from), var(--accent-via), var(--accent-to));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.pulse-gradient-bg {
+.puse-gradient-bg {
   background-image: linear-gradient(135deg, var(--accent-from), var(--accent-via), var(--accent-to));
 }
 
-/* Novagate-style primary: dark fill + cyan ring */
 .nova-ring-btn {
-  background: #0a1616;
-  color: var(--foreground);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--accent-solid) 55%, transparent),
-    0 0 20px -6px color-mix(in srgb, var(--accent-solid) 45%, transparent);
+  background-image: linear-gradient(135deg, var(--accent-from), var(--accent-via));
+  color: #ffffff;
+  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--accent-via) 80%, transparent);
 }
 
 .nova-ring-btn:hover {
-  box-shadow:
-    0 0 0 1px var(--accent-solid),
-    0 0 28px -4px color-mix(in srgb, var(--accent-solid) 55%, transparent);
-  color: var(--accent-solid);
+  filter: brightness(1.06);
+  color: #ffffff;
 }
 
 .suite-tag {
@@ -91,11 +89,11 @@ body {
   color: transparent;
 }
 
-.pulse-ring {
-  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.puse-ring {
+  animation: puse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes pulse-ring {
+@keyframes puse-ring {
   0%,
   100% {
     opacity: 1;
@@ -104,31 +102,6 @@ body {
   50% {
     opacity: 0.6;
     transform: scale(1.08);
-  }
-}
-
-.pulse-draw {
-  animation:
-    pulse-draw-in 1.3s ease-out forwards,
-    pulse-draw-glow 2.4s ease-in-out 1.3s infinite;
-}
-
-@keyframes pulse-draw-in {
-  from {
-    stroke-dashoffset: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes pulse-draw-glow {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
   }
 }
 
@@ -146,11 +119,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pulse-draw {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
-
   .reveal {
     opacity: 1;
     transform: none;

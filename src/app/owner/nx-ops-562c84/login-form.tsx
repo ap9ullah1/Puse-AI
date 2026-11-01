@@ -64,7 +64,7 @@ export function OwnerLoginForm() {
               required
             />
           </label>
-          {error && <p className="text-sm text-amber-400">{error}</p>}
+          {error && <p className="text-sm text-amber-700">{error}</p>}
           <button
             type="submit"
             disabled={loading}

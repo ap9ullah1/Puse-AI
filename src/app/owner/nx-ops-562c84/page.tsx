@@ -36,13 +36,17 @@ function relativeTime(date: Date): string {
   return `${days}d ago`;
 }
 
+function sevenDaysAgo(): Date {
+  return new Date(Date.now() - 1000 * 60 * 60 * 24 * 7);
+}
+
 export default async function OwnerDashboardPage() {
   const authed = await isOwnerAuthenticated();
   if (!authed) {
     return <OwnerLoginForm />;
   }
 
-  const since = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7);
+  const since = sevenDaysAgo();
 
   const [events, totalEvents, uniqueSessions, skinStarts, tryOnStarts, countriesRaw] =
     await Promise.all([
@@ -218,7 +222,7 @@ export default async function OwnerDashboardPage() {
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-muted">
                         <div
-                          className="h-full rounded-full pulse-gradient-bg"
+                          className="h-full rounded-full puse-gradient-bg"
                           style={{ width: `${pct}%` }}
                         />
                       </div>

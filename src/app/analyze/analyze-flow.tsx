@@ -101,14 +101,14 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
           <div className="flex-1">
             {(creating || (taskId && status === "running")) && (
               <div className="flex items-center gap-3 text-muted-foreground">
-                <span className="pulse-gradient-bg pulse-ring h-2.5 w-2.5 rounded-full" />
+                <span className="puse-gradient-bg puse-ring h-2.5 w-2.5 rounded-full" />
                 Analyzing your skin…
               </div>
             )}
 
             {(createError || taskErrorMessage) && (
               <Card className="flex flex-col gap-3 border-amber-500/30 p-5">
-                <p className="text-sm text-amber-400">{createError ?? taskErrorMessage}</p>
+                <p className="text-sm text-amber-700">{createError ?? taskErrorMessage}</p>
                 <button
                   type="button"
                   onClick={retry}
@@ -121,7 +121,7 @@ export function AnalyzeFlow({ skincareProducts }: { skincareProducts: SkincarePr
 
             {status === "success" && !sortedConcerns.length && (
               <Card className="flex flex-col gap-3 border-amber-500/30 p-5">
-                <p className="text-sm text-amber-400">
+                <p className="text-sm text-amber-700">
                   Analysis finished but no scores came back. Try another clear selfie.
                 </p>
                 <button

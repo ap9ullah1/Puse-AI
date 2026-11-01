@@ -12,7 +12,7 @@ export function ProductImage({
   className = "",
 }: {
   id: string;
-  kind: "skincare" | "apparel";
+  kind: "skincare" | "apparel" | "accessory";
   name: string;
   image?: string | null;
   className?: string;

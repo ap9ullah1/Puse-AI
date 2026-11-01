@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   try {
     const taskId = await createClothTryOnTask({
       srcFileId: fileId,
-      garmentCategory: product.garmentCategory,
+      garmentCategory: product.garmentCategory ?? "auto",
       refImageUrl: product.refImageUrl,
     });
     void trackEvent({

@@ -12,62 +12,81 @@ export type SkinConcernType =
   | "moisture"
   | "radiance";
 
-export type SkincareProduct = {
+export type ProductKind = "skincare" | "apparel" | "accessory";
+
+export type ProductBase = {
   id: string;
-  kind: "skincare";
+  kind: ProductKind;
+  category: string;
   name: string;
+  description: string;
   price: number;
   image: string;
+  featured: boolean;
+  stock: number;
+};
+
+export type SkincareProduct = ProductBase & {
+  kind: "skincare";
   concern: SkinConcernType;
 };
 
-export type ApparelProduct = {
-  id: string;
+export type ApparelProduct = ProductBase & {
   kind: "apparel";
-  name: string;
-  price: number;
-  image: string;
-  refImageUrl: string;
-  garmentCategory: GarmentCategory;
+  concern?: null;
+  refImageUrl?: string | null;
+  garmentCategory?: GarmentCategory | null;
 };
 
-export type Product = SkincareProduct | ApparelProduct;
+export type AccessoryProduct = ProductBase & {
+  kind: "accessory";
+};
+
+export type Product = SkincareProduct | ApparelProduct | AccessoryProduct;
 
 export function isApparelProduct(product: Product): product is ApparelProduct {
   return product.kind === "apparel";
 }
 
+export function canTryOn(product: Product): product is ApparelProduct & { refImageUrl: string } {
+  return product.kind === "apparel" && Boolean(product.refImageUrl);
+}
+
 function toProduct(row: ProductRow): Product {
-  if (row.kind === "apparel") {
-    if (!row.refImageUrl || !row.garmentCategory) {
-      throw new Error(`Apparel product "${row.id}" is missing refImageUrl or garmentCategory`);
-    }
+  const base = {
+    id: row.id,
+    category: row.category,
+    name: row.name,
+    description: row.description,
+    price: row.price,
+    image: row.image,
+    featured: row.featured,
+    stock: row.stock,
+  };
+
+  if (row.kind === "skincare") {
+    if (!row.concern) throw new Error(`Skincare product "${row.id}" is missing concern`);
     return {
-      id: row.id,
-      kind: "apparel",
-      name: row.name,
-      price: row.price,
-      image: row.image,
-      refImageUrl: row.refImageUrl,
-      garmentCategory: row.garmentCategory as GarmentCategory,
+      ...base,
+      kind: "skincare",
+      concern: row.concern as SkinConcernType,
     };
   }
 
-  if (!row.concern) {
-    throw new Error(`Skincare product "${row.id}" is missing concern`);
+  if (row.kind === "accessory") {
+    return { ...base, kind: "accessory" };
   }
+
   return {
-    id: row.id,
-    kind: "skincare",
-    name: row.name,
-    price: row.price,
-    image: row.image,
-    concern: row.concern as SkinConcernType,
+    ...base,
+    kind: "apparel",
+    refImageUrl: row.refImageUrl,
+    garmentCategory: (row.garmentCategory as GarmentCategory | null) ?? null,
   };
 }
 
 export async function getAllProducts(): Promise<Product[]> {
-  const rows = await prisma.product.findMany({ orderBy: { name: "asc" } });
+  const rows = await prisma.product.findMany({ orderBy: [{ featured: "desc" }, { name: "asc" }] });
   return rows.map(toProduct);
 }
 
@@ -76,8 +95,80 @@ export async function getProductById(id: string): Promise<Product | null> {
   return row ? toProduct(row) : null;
 }
 
-export async function getApparelProductById(id: string): Promise<ApparelProduct | null> {
+export async function getApparelProductById(
+  id: string
+): Promise<(ApparelProduct & { refImageUrl: string }) | null> {
   const product = await getProductById(id);
-  if (!product || !isApparelProduct(product)) return null;
-  return product;
+  if (!product || !isApparelProduct(product) || !product.refImageUrl) return null;
+  return product as ApparelProduct & { refImageUrl: string };
 }
+
+export async function getProductsByCategory(category: string): Promise<Product[]> {
+  const rows = await prisma.product.findMany({
+    where: { category },
+    orderBy: { name: "asc" },
+  });
+  return rows.map(toProduct);
+}
+
+export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
+  const rows = await prisma.product.findMany({
+    where: { featured: true },
+    take: limit,
+    orderBy: { name: "asc" },
+  });
+  return rows.map(toProduct);
+}
+
+export const SHOP_CATEGORIES = [
+  {
+    slug: "skincare",
+    name: "Skincare",
+    blurb: "Matched to YouCam Skin AI scores",
+    image: "/images/skincare/vitamin-c-brightening-drops.jpg",
+  },
+  {
+    slug: "tops",
+    name: "Tops",
+    blurb: "Shirts & tees — try on selected styles",
+    image: "/images/shop/tshirts.jpg",
+  },
+  {
+    slug: "denim",
+    name: "Denim",
+    blurb: "Jeans & denim sets",
+    image: "/images/shop/jeans.jpg",
+  },
+  {
+    slug: "dresses",
+    name: "Dresses",
+    blurb: "Virtual try-on ready",
+    image: "/images/shop/dresses.jpg",
+  },
+  {
+    slug: "outerwear",
+    name: "Outerwear",
+    blurb: "Jackets for the full look",
+    image: "/images/shop/jackets.jpg",
+  },
+  {
+    slug: "footwear",
+    name: "Footwear",
+    blurb: "Finish the outfit",
+    image: "/images/shop/shoes.jpg",
+  },
+  {
+    slug: "accessories",
+    name: "Accessories",
+    blurb: "Bags, glasses & more",
+    image: "/images/shop/bags.jpg",
+  },
+  {
+    slug: "suits",
+    name: "Suits",
+    blurb: "Formal looks with VTO",
+    image: "/images/shop/suits.jpg",
+  },
+] as const;
+
+export type ShopCategorySlug = (typeof SHOP_CATEGORIES)[number]["slug"];
